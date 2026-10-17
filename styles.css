@@ -1136,41 +1136,73 @@ footer .brand-mark {
     }
 }
 
-.ad-slot {
-  display: none;
-  width: 100%;
-  max-width: 970px;
-  min-height: 0;
-  margin: 20px auto;
-  padding: 0 16px;
-  box-sizing: border-box;
-  text-align: center;
-}
-
-.ad-slot.is-active {
-  display: block;
-  min-height: 100px;
-}
-
-.ad-slot ins.adsbygoogle {
-  display: block;
-  min-height: 100px;
-}
-
-@media (max-width: 600px) {
-  .ad-slot.is-active {
-    min-height: 90px;
-  }
-
-  .ad-slot ins.adsbygoogle {
-    min-height: 90px;
-  }
-}
-
-
 @media(prefers-reduced-motion:reduce) {
     * {
         scroll-behavior: auto !important;
         transition: none !important
     }
+}
+
+/* SAXPDF privacy links */
+.privacy-banner a {
+    color: var(--purple);
+    font-weight: 750;
+    text-decoration: underline;
+    text-underline-offset: 3px
+}
+
+.site-footer .footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px
+}
+
+.site-footer .footer-links a {
+    color: #667087;
+    text-decoration: none
+}
+
+.site-footer .footer-links a:hover {
+    color: var(--purple)
+}
+
+/* Google AdSense reserved spaces */
+.ad-slot {
+  width: 100%;
+  max-width: 970px;
+  margin: 24px auto;
+  padding: 0 16px;
+  box-sizing: border-box;
+}
+
+.ad-label {
+  display: block;
+  text-align: center;
+  font-size: 11px;
+  color: #888;
+  margin-bottom: 6px;
+}
+
+.ad-placeholder {
+  min-height: 100px;
+  border: 1px dashed #b8b8b8;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+  background: #f8f8f8;
+  font-size: 14px;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .ad-slot {
+    margin: 16px auto;
+    padding: 0 12px;
+  }
+
+  .ad-placeholder {
+    min-height: 90px;
+  }
 }

@@ -1,6 +1,6 @@
-# PDFKit — PDF tools website starter
+# SAXPDF — PDF tools website
 
-A responsive, front-end PDF utility website inspired by the general workflow of online PDF tools. This is an independent demo and is not affiliated with iLovePDF.
+A responsive, browser-based PDF utility website. SAXPDF is an independent service.
 
 ## Included tools
 - Merge PDF
@@ -29,6 +29,17 @@ For best results, serve the folder using a local static server, e.g. VS Code Liv
 - Advanced PDF compression, OCR, PDF-to-Word, true redaction, and reliable encrypted-PDF handling need additional libraries or a server-side processing engine.
 
 ## Files
-- `index.html` — page structure
+- `index.html` — homepage structure
 - `styles.css` — responsive visual design
 - `app.js` — file handling and PDF processing
+- `privacy.html` — privacy policy draft (replace contact placeholder before publishing)
+- `terms.html` — terms of use draft (review before publishing)
+- `contact.html` — contact page (replace contact placeholder before publishing)
+- `legal.css` — shared styling for legal pages
+
+
+## Privacy and launch checklist
+- Review `privacy.html`, `terms.html`, and `contact.html`; replace all contact placeholders before public launch.
+- Confirm the privacy wording matches the live code and actual analytics/ad configuration.
+- A privacy policy is not a substitute for a cookie/consent mechanism where one is legally required.
+- The current tools are designed to process files in the browser, but the site loads PDF libraries from CDNs.
