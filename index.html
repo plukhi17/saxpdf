@@ -18,7 +18,22 @@
   <script defer src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script defer src="app.js"></script>
+  
 </head>
+<!-- Google AdSense: configured but disabled until activated -->
+<script>
+  window.PDFKIT_ADS = {
+    enabled: false,
+    client: "ca-pub-XXXXXXXXXXXXXXXX",
+    slots: {
+      top: "YOUR_TOP_AD_SLOT_ID",
+      middle: "YOUR_MIDDLE_AD_SLOT_ID",
+      bottom: "YOUR_BOTTOM_AD_SLOT_ID"
+    }
+  };
+</script>
+
+
 <body>
   <header class="topbar">
     <a class="brand" href="#" aria-label="PDFKit home"><span class="brand-mark">P</span><span>PDF<span class="brand-accent">Kit</span></span></a>
@@ -27,6 +42,7 @@
   </header>
 
   <main>
+    <div class="ad-slot" data-ad-slot="top"></div>
     <section class="hero">
       <div class="eyebrow"><span class="eyebrow-dot"></span> YOUR EVERYDAY PDF TOOLKIT</div>
       <h1>Every PDF task.<br><span>One simple place.</span></h1>
@@ -40,7 +56,7 @@
         <div class="floating-card card-right"><span class="round-check">✓</span><span><b>Ready to go</b><small>Your workflow, simplified</small></span></div>
       </div>
     </section>
-
+    <div class="ad-slot" data-ad-slot="middle"></div>
     <section class="tools-section" id="tools">
       <div class="section-heading"><div><p class="eyebrow">THE TOOLBOX</p><h2>What would you like to do?</h2><p class="muted">Choose a tool to get started. More tools can be added as the project grows.</p></div>
         <label class="search-box"><span>⌕</span><input id="toolSearch" type="search" placeholder="Search tools..." aria-label="Search tools"></label>
@@ -75,7 +91,7 @@
         <aside class="workspace-aside"><div class="aside-icon">✦</div><h3>Simple by design.</h3><p>Pick a tool, add your files, adjust the options and download your result.</p><div class="aside-rule"></div><div class="aside-point"><span>01</span><div><b>Upload</b><small>Choose files from your device.</small></div></div><div class="aside-point"><span>02</span><div><b>Customize</b><small>Set the options you need.</small></div></div><div class="aside-point"><span>03</span><div><b>Download</b><small>Save your processed file.</small></div></div></aside>
       </div>
     </section>
-
+    <div class="ad-slot" data-ad-slot="bottom"></div>
     <section class="how-section" id="how"><p class="eyebrow">NO FUSS, JUST FILES</p><h2>Three steps. That’s it.</h2><div class="steps"><article><span>01</span><h3>Choose a tool</h3><p>Pick the PDF task you need from the toolbox.</p></article><article><span>02</span><h3>Add your files</h3><p>Select files and set any available options.</p></article><article><span>03</span><h3>Download</h3><p>Process your file and save the result locally.</p></article></div></section>
     <section class="privacy-banner"><div class="privacy-icon">⌑</div><div><h2>Your files are yours.</h2><p>Supported operations run in your browser. This demo does not upload your files to a server.</p></div></section>
   </main>
