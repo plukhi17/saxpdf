@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A privacy-first PDF toolkit to merge, split, rotate, crop, and convert PDFs in your browser.">
+  <title>PDFKit — Simple PDF tools</title>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="PDFKit home"><span class="brand-mark">P</span><span>PDF<span class="brand-accent">Kit</span></span></a>
+    <nav class="topnav"><a href="#tools">All tools</a><a href="#how">How it works</a><a class="nav-cta" href="#tools">Get started</a></nav>
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">☰</button>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="eyebrow"><span class="eyebrow-dot"></span> YOUR EVERYDAY PDF TOOLKIT</div>
+      <h1>Every PDF task.<br><span>One simple place.</span></h1>
+      <p class="hero-copy">Merge, split, rotate and crop PDF files with a clean, easy-to-use workspace. Your files stay in your browser for supported tools.</p>
+      <a class="primary-btn" href="#tools">Explore PDF tools <span aria-hidden="true">→</span></a>
+      <div class="trust-row"><span>✓ No account required</span><span>✓ Browser-based processing</span><span>✓ Simple workflow</span></div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+        <div class="floating-card card-left"><span class="file-icon red">PDF</span><span><b>document.pdf</b><small>2.4 MB</small></span></div>
+        <div class="document-stack"><div class="doc doc-back"></div><div class="doc doc-mid"></div><div class="doc doc-front"><div class="doc-badge">PDF</div><div class="doc-line long"></div><div class="doc-line"></div><div class="doc-line medium"></div><div class="doc-block"></div><div class="doc-line long"></div><div class="doc-line medium"></div></div><div class="spark spark-one">✦</div><div class="spark spark-two">✧</div></div>
+        <div class="floating-card card-right"><span class="round-check">✓</span><span><b>Ready to go</b><small>Your workflow, simplified</small></span></div>
+      </div>
+    </section>
+
+    <section class="tools-section" id="tools">
+      <div class="section-heading"><div><p class="eyebrow">THE TOOLBOX</p><h2>What would you like to do?</h2><p class="muted">Choose a tool to get started. More tools can be added as the project grows.</p></div>
+        <label class="search-box"><span>⌕</span><input id="toolSearch" type="search" placeholder="Search tools..." aria-label="Search tools"></label>
+      </div>
+      <div class="category-row"><button class="category active" data-category="all">All tools</button><button class="category" data-category="organize">Organize</button><button class="category" data-category="edit">Edit</button><button class="category" data-category="convert">Convert</button></div>
+      <div class="tool-grid" id="toolGrid">
+        <button class="tool-card" data-tool="merge" data-category="organize"><span class="tool-icon coral">▤</span><span class="tool-card-title">Merge PDF</span><span class="tool-card-copy">Combine PDFs in your preferred order.</span><span class="tool-arrow">↗</span></button>
+        <button class="tool-card" data-tool="split" data-category="organize"><span class="tool-icon violet">✂</span><span class="tool-card-title">Split PDF</span><span class="tool-card-copy">Extract selected pages into a new PDF.</span><span class="tool-arrow">↗</span></button>
+        <button class="tool-card" data-tool="rotate" data-category="edit"><span class="tool-icon blue">↻</span><span class="tool-card-title">Rotate PDF</span><span class="tool-card-copy">Rotate all pages or selected pages.</span><span class="tool-arrow">↗</span></button>
+        <button class="tool-card" data-tool="crop" data-category="edit"><span class="tool-icon green">▣</span><span class="tool-card-title">Crop PDF</span><span class="tool-card-copy">Set page margins and crop boundaries.</span><span class="tool-arrow">↗</span></button>
+        <button class="tool-card" data-tool="jpg" data-category="convert"><span class="tool-icon amber">▧</span><span class="tool-card-title">PDF to JPG</span><span class="tool-card-copy">Render PDF pages as JPG images.</span><span class="tool-arrow">↗</span></button>
+        <button class="tool-card" data-tool="jpgpdf" data-category="convert"><span class="tool-icon pink">▤</span><span class="tool-card-title">JPG to PDF</span><span class="tool-card-copy">Turn JPG and PNG images into a PDF.</span><span class="tool-arrow">↗</span></button>
+        <button class="tool-card" data-tool="watermark" data-category="edit"><span class="tool-icon teal">✎</span><span class="tool-card-title">Add watermark</span><span class="tool-card-copy">Stamp text on each page of a PDF.</span><span class="tool-arrow">↗</span></button>
+        <button class="tool-card" data-tool="pages" data-category="organize"><span class="tool-icon slate">#</span><span class="tool-card-title">Page numbers</span><span class="tool-card-copy">Add page numbers to a document.</span><span class="tool-arrow">↗</span></button>
+      </div>
+    </section>
+
+    <section class="workspace-section" id="workspace">
+      <div class="workspace-heading"><div><p class="eyebrow">PDF WORKSPACE</p><h2 id="workspaceTitle">Ready when you are</h2><p class="muted" id="workspaceDescription">Choose a tool above to open its workspace.</p></div><span class="local-badge"><span></span> Local processing</span></div>
+      <div class="workspace-card">
+        <div class="workspace-main">
+          <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Choose PDF files">
+            <div class="upload-symbol">↑</div><h3>Drop your files here</h3><p>or <span>browse files</span> from your device</p><small id="fileHint">PDF files · Select multiple files when merging</small>
+            <input id="fileInput" type="file" accept="application/pdf" multiple hidden>
+          </div>
+          <div id="fileList" class="file-list" aria-live="polite"></div>
+          <div id="toolOptions" class="tool-options hidden"></div>
+          <div class="workspace-actions"><button class="secondary-btn" id="clearBtn" type="button">Clear files</button><button class="primary-btn" id="runBtn" type="button" disabled>Choose files first <span>→</span></button></div>
+          <p id="status" class="status" aria-live="polite"></p>
+          <div id="downloadArea"></div>
+        </div>
+        <aside class="workspace-aside"><div class="aside-icon">✦</div><h3>Simple by design.</h3><p>Pick a tool, add your files, adjust the options and download your result.</p><div class="aside-rule"></div><div class="aside-point"><span>01</span><div><b>Upload</b><small>Choose files from your device.</small></div></div><div class="aside-point"><span>02</span><div><b>Customize</b><small>Set the options you need.</small></div></div><div class="aside-point"><span>03</span><div><b>Download</b><small>Save your processed file.</small></div></div></aside>
+      </div>
+    </section>
+
+    <section class="how-section" id="how"><p class="eyebrow">NO FUSS, JUST FILES</p><h2>Three steps. That’s it.</h2><div class="steps"><article><span>01</span><h3>Choose a tool</h3><p>Pick the PDF task you need from the toolbox.</p></article><article><span>02</span><h3>Add your files</h3><p>Select files and set any available options.</p></article><article><span>03</span><h3>Download</h3><p>Process your file and save the result locally.</p></article></div></section>
+    <section class="privacy-banner"><div class="privacy-icon">⌑</div><div><h2>Your files are yours.</h2><p>Supported operations run in your browser. This demo does not upload your files to a server.</p></div></section>
+  </main>
+  <footer><a class="brand" href="#"><span class="brand-mark">P</span><span>PDF<span class="brand-accent">Kit</span></span></a><span>Independent demo project · Not affiliated with iLovePDF</span><span>© 2026 PDFKit</span></footer>
+</body>
+</html>
