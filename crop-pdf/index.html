@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Crop PDF Pages Online Free | SAXPDF</title>
+  <meta name="description" content="Crop PDF pages online by setting top, right, bottom, and left margins. Process the PDF in your browser and download the result.">
+  <link rel="canonical" href="https://www.saxpdf.com/crop-pdf/">
+  <meta name="robots" content="index,follow">
+  <link rel="stylesheet" href="../styles.css">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-0HQPKYNRGJ"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-0HQPKYNRGJ');</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script defer src="../app.js"></script>
+</head>
+<body data-tool="crop">
+<header class="topbar"><a class="brand" href="/" aria-label="SAXPDF home"><span class="brand-mark">S</span><span>SAX<span class="brand-accent">PDF</span></span></a><nav class="topnav"><a href="/#tools">All tools</a><a href="/#how">How it works</a><a href="/privacy.html">Privacy</a><a class="nav-cta" href="#workspace">Open tool</a></nav><button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">☰</button></header>
+<main>
+<section class="tool-hero"><p class="breadcrumbs"><a href="/">Home</a> / <a href="/#tools">PDF tools</a> / Crop PDF</p><p class="eyebrow">SAXPDF · EDIT TOOL</p><h1>Crop PDF pages online</h1><p class="lead">Adjust visible PDF page boundaries by setting margins in points. Preview the result in a PDF reader after downloading.</p><div class="hero-links"><a class="primary-btn" href="#workspace">Use Crop PDF <span aria-hidden="true">↓</span></a><a class="secondary-btn" href="/#tools">Explore all tools</a></div></section>
+<section class="workspace-section tool-workspace" id="workspace">
+  <div class="workspace-heading"><div><p class="eyebrow">PDF WORKSPACE</p><h2 id="workspaceTitle">Ready when you are</h2><p class="muted" id="workspaceDescription">Choose files and set your options.</p></div><span class="local-badge"><span></span> Local processing</span></div>
+  <div class="workspace-card"><div class="workspace-main">
+    <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Choose files"><div class="upload-symbol">↑</div><h3>Drop your files here</h3><p>or <span>browse files</span> from your device</p><small id="fileHint">Choose files to begin.</small><input id="fileInput" type="file" accept="application/pdf" multiple hidden></div>
+    <div id="fileList" class="file-list" aria-live="polite"></div><div id="toolOptions" class="tool-options hidden"></div>
+    <div class="workspace-actions"><button class="secondary-btn" id="clearBtn" type="button">Clear files</button><button class="primary-btn" id="runBtn" type="button" disabled>Choose files first <span>→</span></button></div>
+    <p id="status" class="status" aria-live="polite"></p><div id="downloadArea"></div>
+  </div><aside class="workspace-aside"><div class="aside-icon">✦</div><h3>Simple by design.</h3><p>Choose your files, adjust the available options, and download the result.</p><div class="aside-rule"></div><div class="aside-point"><span>01</span><div><b>Select files</b><small>Choose files from your device.</small></div></div><div class="aside-point"><span>02</span><div><b>Customize</b><small>Set the options you need.</small></div></div><div class="aside-point"><span>03</span><div><b>Download</b><small>Save your processed file.</small></div></div></aside></div>
+</section>
+<section class="tool-page-content"><div class="content-block"><h2>How to crop pdf</h2><p>Use the SAXPDF workspace above to process your file in a few steps:</p><div class="steps-grid"><article><h3>01. Select a PDF file.</h3></article><article><h3>02. Set the top, right, bottom, and left crop margins in points.</h3></article><article><h3>03. Process and download the cropped PDF.</h3></article></div></div>
+<div class="content-block"><h2>About this tool</h2><p>Adjust visible PDF page boundaries by setting margins in points. Preview the result in a PDF reader after downloading. The tool uses browser-based PDF libraries to process the selected files. Performance can depend on your browser, device memory, and file size.</p></div>
+<div class="content-block"><div class="tool-privacy-note"><h3>File privacy</h3><p>The current tool is designed to process selected files locally in your browser and does not intentionally upload document contents to SAXPDF servers. The site loads required third-party libraries and may use hosting, analytics, or advertising services. See the <a href="/privacy.html"><u>Privacy Policy</u></a> for more information.</p></div></div>
+<div class="content-block"><h2>Frequently asked questions</h2><div class="faq-item"><h3>Does cropping permanently erase hidden content?</h3><p>This tool sets the PDF crop box. It may hide content outside the visible page area without removing that content from the underlying PDF data.</p></div><div class="faq-item"><h3>What units are crop margins in?</h3><p>The current tool uses PDF points. There are 72 points in one inch.</p></div><div class="faq-item"><h3>Can I crop each page differently?</h3><p>The current implementation applies the chosen margins to the selected pages using the same values.</p></div></div>
+<div class="content-block"><h2>Related PDF tools</h2><div class="related-tools"><a href="/rotate-pdf/">Rotate PDF</a><a href="/merge-pdf/">Merge PDF</a><a href="/add-watermark-to-pdf/">Add watermark</a></div></div></section>
+</main>
+<footer class="site-footer"><a class="brand" href="/" aria-label="SAXPDF home"><span class="brand-mark">S</span><span>SAX<span class="brand-accent">PDF</span></span></a><nav class="footer-links" aria-label="Footer"><a href="/privacy.html">Privacy Policy</a><a href="/terms.html">Terms of Use</a><a href="/contact.html">Contact</a></nav><span>© 2026 SAXPDF</span></footer>
+<script>
+(function(){
+  if (window.location.protocol !== "file:") return;
+  var isToolPage = !!(document.body && document.body.dataset.tool);
+  var root = new URL(isToolPage ? "../" : "./", window.location.href);
+  document.querySelectorAll('a[href^="/"]').forEach(function(link){
+    var raw = link.getAttribute("href");
+    if (!raw || raw.startsWith("//")) return;
+    var path = raw.slice(1);
+    if (path.endsWith("/")) path += "index.html";
+    if (path === "") path = "index.html";
+    link.href = new URL(path, root).href;
+  });
+})();
+</script>
+</body></html>

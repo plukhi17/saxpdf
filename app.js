@@ -3,6 +3,7 @@
   const $ = (s) => document.querySelector(s);
   const fileInput = $("#fileInput"), dropzone = $("#dropzone"), fileList = $("#fileList");
   const optionsBox = $("#toolOptions"), runBtn = $("#runBtn"), status = $("#status"), downloadArea = $("#downloadArea");
+  const workspaceTitle = $("#workspaceTitle"), workspaceDescription = $("#workspaceDescription"), fileHint = $("#fileHint");
   let files = [], activeTool = null, objectUrls = [];
   const toolInfo = {
     merge: ["Merge PDF", "Combine two or more PDFs in the order shown.", "Select at least two PDF files."],
@@ -16,11 +17,11 @@
   };
   const bytesLabel = n => n < 1024 ? `${n} B` : n < 1048576 ? `${(n/1024).toFixed(1)} KB` : `${(n/1048576).toFixed(2)} MB`;
   const safeName = name => name.replace(/\.pdf$/i, "").replace(/[^a-z0-9_-]+/gi, "_").slice(0, 60) || "document";
-  function setStatus(message, error=false) { status.textContent=message; status.classList.toggle("error",error); }
-  function clearDownloads() { objectUrls.forEach(URL.revokeObjectURL); objectUrls=[]; downloadArea.replaceChildren(); }
+  function setStatus(message, error=false) { if (!status) return; status.textContent=message; status.classList.toggle("error",error); }
+  function clearDownloads() { objectUrls.forEach(URL.revokeObjectURL); objectUrls=[]; if (downloadArea) downloadArea.replaceChildren(); }
   function addDownload(blob, filename, label="Download result") {
     const url=URL.createObjectURL(blob); objectUrls.push(url);
-    const a=document.createElement("a"); a.href=url; a.download=filename; a.className="download-link"; a.textContent=`↓ ${label}: ${filename}`; downloadArea.append(a);
+    const a=document.createElement("a"); a.href=url; a.download=filename; a.className="download-link"; a.textContent=`↓ ${label}: ${filename}`; if (downloadArea) downloadArea.append(a);
   }
   function addOption(label, type, name, value, extra={}) {
     const wrap=document.createElement("label"); wrap.textContent=label;
@@ -30,14 +31,14 @@
     wrap.append(input); if(extra.wide) wrap.classList.add("option-wide"); optionsBox.append(wrap);
   }
   function buildOptions() {
-    optionsBox.replaceChildren(); optionsBox.classList.add("hidden"); if(!activeTool) return;
+    if (!optionsBox || !fileInput) return; optionsBox.replaceChildren(); optionsBox.classList.add("hidden"); if(!activeTool) return;
     if(activeTool==="split"){addOption("Page range (e.g. 1-3)","text","range","1-1",{wide:true});}
     if(activeTool==="rotate"){addOption("Rotation","select","angle","90",{choices:[["90","90° clockwise"],["180","180°"],["270","270° clockwise"]]});addOption("Page range (blank = all)","text","range","",{wide:true});}
     if(activeTool==="crop"){addOption("Top margin (points)","number","top","20",{min:0,max:10000});addOption("Right margin (points)","number","right","20",{min:0,max:10000});addOption("Bottom margin (points)","number","bottom","20",{min:0,max:10000});addOption("Left margin (points)","number","left","20",{min:0,max:10000});}
     if(activeTool==="watermark"){addOption("Watermark text","text","text","CONFIDENTIAL",{wide:true});}
     if(activeTool==="jpgpdf"){fileInput.accept="image/jpeg,image/png";fileInput.multiple=true;}
     else {fileInput.accept="application/pdf";fileInput.multiple=activeTool==="merge";}
-    if(!["merge","jpg","jpgpdf"].includes(activeTool)) addOption("Page range (blank = all, e.g. 1-3)","text","range","",{wide:true});
+    if(!["merge","split","jpg","jpgpdf"].includes(activeTool)) addOption("Page range (blank = all, e.g. 1-3)","text","range","",{wide:true});
     optionsBox.classList.remove("hidden");
   }
   function option(name){return optionsBox.querySelector(`[data-option="${name}"]`)?.value ?? "";}
@@ -48,32 +49,39 @@
     return [...out].sort((a,b)=>a-b);
   }
   function renderFiles(){
+    if (!fileList || !runBtn) return;
     fileList.replaceChildren();
     files.forEach((f,i)=>{const row=document.createElement("div");row.className="file-row";const icon=document.createElement("span");icon.className="mini-pdf";icon.textContent=f.type.startsWith("image/")?"IMG":"PDF";const info=document.createElement("div");info.className="file-info";const b=document.createElement("b");b.textContent=f.name;const sm=document.createElement("small");sm.textContent=bytesLabel(f.size);info.append(b,sm);const remove=document.createElement("button");remove.className="remove-file";remove.type="button";remove.textContent="Remove";remove.setAttribute("aria-label",`Remove ${f.name}`);remove.onclick=()=>{files.splice(i,1);renderFiles();clearDownloads();};row.append(icon,info,remove);fileList.append(row);});
     runBtn.disabled=!files.length;runBtn.innerHTML=files.length?`Process ${files.length} file${files.length===1?"":"s"} <span>→</span>`:"Choose files first <span>→</span>";
   }
-  function chooseTool(tool){
-    activeTool=tool; const info=toolInfo[tool]; $("#workspaceTitle").textContent=info[0];$("#workspaceDescription").textContent=info[1];$("#fileHint").textContent=info[2];
+  function chooseTool(tool, scroll=true){
+    if (!toolInfo[tool]) return;
+    activeTool=tool; const info=toolInfo[tool]; if(workspaceTitle) workspaceTitle.textContent=info[0]; if(workspaceDescription) workspaceDescription.textContent=info[1]; if(fileHint) fileHint.textContent=info[2];
     buildOptions(); clearDownloads(); setStatus(""); document.querySelectorAll(".tool-card").forEach(c=>c.classList.toggle("selected",c.dataset.tool===tool));
-    if(tool==="jpgpdf") files=[]; renderFiles(); $("#workspace").scrollIntoView({behavior:"smooth",block:"start"});
+    if(tool==="jpgpdf") files=[]; renderFiles();
+    const workspace=$("#workspace"); if(scroll && workspace) workspace.scrollIntoView({behavior:"smooth",block:"start"});
   }
-  document.querySelectorAll(".tool-card").forEach(card=>card.addEventListener("click",()=>chooseTool(card.dataset.tool)));
+  document.querySelectorAll(".tool-card[data-tool]").forEach(card=>{
+    if(card.tagName.toLowerCase() === "button") card.addEventListener("click",()=>chooseTool(card.dataset.tool));
+  });
   document.querySelectorAll(".category").forEach(btn=>btn.addEventListener("click",()=>{document.querySelectorAll(".category").forEach(b=>b.classList.toggle("active",b===btn));filterTools();}));
-  $("#toolSearch").addEventListener("input",filterTools);
-  function filterTools(){const cat=document.querySelector(".category.active").dataset.category, q=$("#toolSearch").value.toLowerCase();document.querySelectorAll(".tool-card").forEach(c=>{c.classList.toggle("hidden",!(cat==="all"||c.dataset.category===cat)||!c.innerText.toLowerCase().includes(q));});}
+  const toolSearch=$("#toolSearch"); if(toolSearch) toolSearch.addEventListener("input",filterTools);
+  function filterTools(){const activeCategory=document.querySelector(".category.active"), search=$("#toolSearch"); if(!activeCategory||!search)return; const cat=activeCategory.dataset.category, q=search.value.toLowerCase();document.querySelectorAll(".tool-card").forEach(c=>{c.classList.toggle("hidden",!(cat==="all"||c.dataset.category===cat)||!c.innerText.toLowerCase().includes(q));});}
   function acceptFiles(selected){
     const chosen=[...selected]; if(!chosen.length)return;
     if(activeTool==="jpgpdf"){const valid=chosen.filter(f=>["image/jpeg","image/png"].includes(f.type));if(valid.length!==chosen.length){setStatus("Please select JPG or PNG images only.",true);return;}files=[...files,...valid];}
     else {const valid=chosen.filter(f=>f.type==="application/pdf"||f.name.toLowerCase().endsWith(".pdf"));if(valid.length!==chosen.length){setStatus("Please select PDF files only.",true);return;}files=activeTool==="merge"?[...files,...valid]:valid.slice(0,1);}
     clearDownloads();setStatus("");renderFiles();
   }
-  dropzone.addEventListener("click",()=>fileInput.click());dropzone.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();fileInput.click();}});
-  fileInput.addEventListener("change",()=>{acceptFiles(fileInput.files);fileInput.value="";});
-  ["dragenter","dragover"].forEach(ev=>dropzone.addEventListener(ev,e=>{e.preventDefault();dropzone.classList.add("dragover");}));
-  ["dragleave","drop"].forEach(ev=>dropzone.addEventListener(ev,e=>{e.preventDefault();dropzone.classList.remove("dragover");}));
-  dropzone.addEventListener("drop",e=>acceptFiles(e.dataTransfer.files));
-  $("#clearBtn").addEventListener("click",()=>{files=[];renderFiles();clearDownloads();setStatus("");});
-  $("#menuToggle").addEventListener("click",()=>$(".topnav").classList.toggle("open"));
+  if (dropzone && fileInput) {
+    dropzone.addEventListener("click",()=>fileInput.click());dropzone.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();fileInput.click();}});
+    fileInput.addEventListener("change",()=>{acceptFiles(fileInput.files);fileInput.value="";});
+    ["dragenter","dragover"].forEach(ev=>dropzone.addEventListener(ev,e=>{e.preventDefault();dropzone.classList.add("dragover");}));
+    ["dragleave","drop"].forEach(ev=>dropzone.addEventListener(ev,e=>{e.preventDefault();dropzone.classList.remove("dragover");}));
+    dropzone.addEventListener("drop",e=>acceptFiles(e.dataTransfer.files));
+  }
+  const clearBtn=$("#clearBtn"); if(clearBtn) clearBtn.addEventListener("click",()=>{files=[];renderFiles();clearDownloads();setStatus("");});
+  const menuToggle=$("#menuToggle"); if(menuToggle) menuToggle.addEventListener("click",()=>$(".topnav").classList.toggle("open"));
 
   async function loadPdf(file){return PDFLib.PDFDocument.load(await file.arrayBuffer());}
   async function process(){
@@ -124,6 +132,7 @@
     }catch(err){console.error(err);setStatus(err.message||"Could not process this file. It may be invalid or encrypted.",true);}
     finally{runBtn.disabled=!files.length;runBtn.innerHTML=files.length?`Process ${files.length} file${files.length===1?"":"s"} <span>→</span>`:"Choose files first <span>→</span>";}
   }
-  runBtn.addEventListener("click",process);
-  chooseTool("merge");
+  if (runBtn) runBtn.addEventListener("click",process);
+  const pageTool=document.body.dataset.tool;
+  if (pageTool) chooseTool(pageTool, false); else if ($("#workspace")) chooseTool("merge", false);
 })();

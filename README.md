@@ -1,45 +1,32 @@
-# SAXPDF — PDF tools website
+# SAXPDF SEO-ready static project
 
-A responsive, browser-based PDF utility website. SAXPDF is an independent service.
+## Included
+- `index.html`: homepage with crawlable links to all eight tool pages.
+- Eight dedicated tool pages in folders: `merge-pdf/`, `split-pdf/`, `rotate-pdf/`, `crop-pdf/`, `pdf-to-jpg/`, `jpg-to-pdf/`, `add-watermark-to-pdf/`, `add-page-numbers-to-pdf/`.
+- `app.js` and `styles.css`: shared tool logic and design.
+- `sitemap.xml` and `robots.txt`.
+- `privacy.html`, `terms.html`, `contact.html`, and `legal.css`.
 
-## Included tools
-- Merge PDF
-- Split PDF (extract a page range)
-- Rotate PDF
-- Crop PDF (set top/right/bottom/left margins in PDF points)
-- PDF to JPG (downloads each page separately)
-- JPG/PNG to PDF
-- Add text watermark
-- Add page numbers
+## Test locally
+- You can double-click `index.html`; internal navigation has a `file://` compatibility shim for local browsing.
+- For the most accurate test (especially PDF.js worker behavior), run a local server from this folder: `python3 -m http.server 8000`, then open `http://localhost:8000`.
+- Stop the server with `Ctrl+C`.
 
-## Run it
-1. Extract the ZIP.
-2. Open `index.html` in a modern browser with internet access (the demo loads pdf-lib and PDF.js from CDNs).
-3. Select a tool, add file(s), adjust options, then process and download.
+## Deploy
+1. Back up your current GitHub/Vercel project.
+2. Upload the contents of this project folder to the root of the repository that Vercel deploys. Keep the folder structure intact.
+3. Ensure Vercel serves static folders with their `index.html` files (default static behavior works).
+4. Open each tool URL and test selecting a file, processing it, and downloading the result.
+5. Open `/sitemap.xml` and `/robots.txt`, then submit the sitemap in Google Search Console.
 
-For best results, serve the folder using a local static server, e.g. VS Code Live Server or `python -m http.server 8000`, then visit `http://localhost:8000`.
+## Before publishing
+- Confirm the Google Analytics measurement ID `G-0HQPKYNRGJ` is the correct property. The GA4 script loader is included on the homepage and each tool page.
+- The homepage's AdSense configuration remains disabled and uses placeholder publisher/slot IDs. Ads will not be activated by this project. Do not enable ads until real IDs and required consent/disclosure behavior are configured.
+- Replace any contact email placeholders in `privacy.html`, `terms.html`, and `contact.html` with an email address you monitor.
+- Confirm the privacy statement accurately describes your implementation. The tools are designed to process selected files locally, but the site still loads third-party scripts and uses hosting/analytics services.
+- If your existing production `app.js` or `styles.css` contains changes not in the uploaded `index.html`, merge those changes before deploying. This package uses the starter versions of those two files because only `index.html` was supplied for this update.
 
-## Important limitations
-- Browser libraries are loaded from CDNs, so an internet connection is required unless you download and host the libraries locally.
-- Crop PDF uses page crop boxes and changes the visible page boundary; it does not securely erase hidden content.
-- Split currently extracts a single page range into one output PDF.
-- PDF to JPG creates one download per page; it does not package them into a ZIP.
-- Complex PDFs, password-protected PDFs, unusual fonts, and very large files may fail or use significant memory.
-- This is a front-end starter, not a production-grade clone. Before public launch, add robust validation, file-size limits, automated tests, accessibility checks, dependency pinning/self-hosting, privacy notices, and security review.
-- Advanced PDF compression, OCR, PDF-to-Word, true redaction, and reliable encrypted-PDF handling need additional libraries or a server-side processing engine.
-
-## Files
-- `index.html` — homepage structure
-- `styles.css` — responsive visual design
-- `app.js` — file handling and PDF processing
-- `privacy.html` — privacy policy draft (replace contact placeholder before publishing)
-- `terms.html` — terms of use draft (review before publishing)
-- `contact.html` — contact page (replace contact placeholder before publishing)
-- `legal.css` — shared styling for legal pages
-
-
-## Privacy and launch checklist
-- Review `privacy.html`, `terms.html`, and `contact.html`; replace all contact placeholders before public launch.
-- Confirm the privacy wording matches the live code and actual analytics/ad configuration.
-- A privacy policy is not a substitute for a cookie/consent mechanism where one is legally required.
-- The current tools are designed to process files in the browser, but the site loads PDF libraries from CDNs.
+## Tool behavior notes
+- The crop tool sets the PDF crop box; it does not securely erase underlying content outside the crop boundary.
+- PDF-to-JPG creates one downloadable JPG per page.
+- JPG-to-PDF supports JPG/JPEG and PNG.

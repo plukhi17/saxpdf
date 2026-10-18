@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-0HQPKYNRGJ"></script>
    <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
@@ -12,6 +13,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Free online PDF tools to merge, split, rotate, crop, and convert documents in your browser with SAXPDF.">
   <title>SAXPDF — Free Online PDF Tools</title>
+  <link rel="canonical" href="https://www.saxpdf.com/">
+  <meta name="robots" content="index,follow">
+  <meta property="og:title" content="SAXPDF — Free Online PDF Tools">
+  <meta property="og:description" content="Merge, split, rotate, crop, and convert PDF files with SAXPDF.">
+  <meta property="og:url" content="https://www.saxpdf.com/">
+  <meta property="og:type" content="website">
   <link rel="stylesheet" href="styles.css">
   <script defer src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -31,14 +38,14 @@
 <body>
   <header class="topbar">
     <a class="brand" href="#" aria-label="SAXPDF home"><span class="brand-mark">S</span><span>SAX<span class="brand-accent">PDF</span></span></a>
-    <nav class="topnav"><a href="#tools">All tools</a><a href="#how">How it works</a><a class="nav-cta" href="#tools">Get started</a></nav>
+    <nav class="topnav"><a href="#tools">All tools</a><a href="#how">How it works</a><a href="/privacy.html">Privacy</a><a class="nav-cta" href="#tools">Get started</a></nav>
     <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">☰</button>
   </header>
 
   <main>
     <section class="hero">
       <div class="eyebrow"><span class="eyebrow-dot"></span> YOUR EVERYDAY PDF TOOLKIT</div>
-      <h1>Every PDF task.<br><span>One simple place.</span></h1>
+      <h1>Online PDF tools.<br><span>One simple place.</span></h1>
       <p class="hero-copy">Merge, split, rotate and crop PDF files with a clean, easy-to-use workspace. Your files stay in your browser for supported tools.</p>
       <a class="primary-btn" href="#tools">Explore PDF tools <span aria-hidden="true">→</span></a>
       <div class="trust-row"><span>✓ No account required</span><span>✓ Browser-based processing</span><span>✓ Simple workflow</span></div>
@@ -51,19 +58,19 @@
     </section>
 
     <section class="tools-section" id="tools">
-      <div class="section-heading"><div><p class="eyebrow">THE TOOLBOX</p><h2>What would you like to do?</h2><p class="muted">Choose a tool to get started. More tools can be added as the project grows.</p></div>
+      <div class="section-heading"><div><p class="eyebrow">THE TOOLBOX</p><h2>What would you like to do?</h2><p class="muted">Choose a tool to open its dedicated workspace and follow the steps to process your file.</p></div>
         <label class="search-box"><span>⌕</span><input id="toolSearch" type="search" placeholder="Search tools..." aria-label="Search tools"></label>
       </div>
       <div class="category-row"><button class="category active" data-category="all">All tools</button><button class="category" data-category="organize">Organize</button><button class="category" data-category="edit">Edit</button><button class="category" data-category="convert">Convert</button></div>
       <div class="tool-grid" id="toolGrid">
-        <button class="tool-card" data-tool="merge" data-category="organize"><span class="tool-icon coral">▤</span><span class="tool-card-title">Merge PDF</span><span class="tool-card-copy">Combine PDFs in your preferred order.</span><span class="tool-arrow">↗</span></button>
-        <button class="tool-card" data-tool="split" data-category="organize"><span class="tool-icon violet">✂</span><span class="tool-card-title">Split PDF</span><span class="tool-card-copy">Extract selected pages into a new PDF.</span><span class="tool-arrow">↗</span></button>
-        <button class="tool-card" data-tool="rotate" data-category="edit"><span class="tool-icon blue">↻</span><span class="tool-card-title">Rotate PDF</span><span class="tool-card-copy">Rotate all pages or selected pages.</span><span class="tool-arrow">↗</span></button>
-        <button class="tool-card" data-tool="crop" data-category="edit"><span class="tool-icon green">▣</span><span class="tool-card-title">Crop PDF</span><span class="tool-card-copy">Set page margins and crop boundaries.</span><span class="tool-arrow">↗</span></button>
-        <button class="tool-card" data-tool="jpg" data-category="convert"><span class="tool-icon amber">▧</span><span class="tool-card-title">PDF to JPG</span><span class="tool-card-copy">Render PDF pages as JPG images.</span><span class="tool-arrow">↗</span></button>
-        <button class="tool-card" data-tool="jpgpdf" data-category="convert"><span class="tool-icon pink">▤</span><span class="tool-card-title">JPG to PDF</span><span class="tool-card-copy">Turn JPG and PNG images into a PDF.</span><span class="tool-arrow">↗</span></button>
-        <button class="tool-card" data-tool="watermark" data-category="edit"><span class="tool-icon teal">✎</span><span class="tool-card-title">Add watermark</span><span class="tool-card-copy">Stamp text on each page of a PDF.</span><span class="tool-arrow">↗</span></button>
-        <button class="tool-card" data-tool="pages" data-category="organize"><span class="tool-icon slate">#</span><span class="tool-card-title">Page numbers</span><span class="tool-card-copy">Add page numbers to a document.</span><span class="tool-arrow">↗</span></button>
+        <a class="tool-card" href="/merge-pdf/" data-tool="merge" data-category="organize"><span class="tool-icon coral">▤</span><span class="tool-card-title">Merge PDF</span><span class="tool-card-copy">Combine PDFs in your preferred order.</span><span class="tool-arrow">↗</span></a>
+        <a class="tool-card" href="/split-pdf/" data-tool="split" data-category="organize"><span class="tool-icon violet">✂</span><span class="tool-card-title">Split PDF</span><span class="tool-card-copy">Extract selected pages into a new PDF.</span><span class="tool-arrow">↗</span></a>
+        <a class="tool-card" href="/rotate-pdf/" data-tool="rotate" data-category="edit"><span class="tool-icon blue">↻</span><span class="tool-card-title">Rotate PDF</span><span class="tool-card-copy">Rotate all pages or selected pages.</span><span class="tool-arrow">↗</span></a>
+        <a class="tool-card" href="/crop-pdf/" data-tool="crop" data-category="edit"><span class="tool-icon green">▣</span><span class="tool-card-title">Crop PDF</span><span class="tool-card-copy">Set page margins and crop boundaries.</span><span class="tool-arrow">↗</span></a>
+        <a class="tool-card" href="/pdf-to-jpg/" data-tool="jpg" data-category="convert"><span class="tool-icon amber">▧</span><span class="tool-card-title">PDF to JPG</span><span class="tool-card-copy">Render PDF pages as JPG images.</span><span class="tool-arrow">↗</span></a>
+        <a class="tool-card" href="/jpg-to-pdf/" data-tool="jpgpdf" data-category="convert"><span class="tool-icon pink">▤</span><span class="tool-card-title">JPG to PDF</span><span class="tool-card-copy">Turn JPG and PNG images into a PDF.</span><span class="tool-arrow">↗</span></a>
+        <a class="tool-card" href="/add-watermark-to-pdf/" data-tool="watermark" data-category="edit"><span class="tool-icon teal">✎</span><span class="tool-card-title">Add watermark</span><span class="tool-card-copy">Stamp text on each page of a PDF.</span><span class="tool-arrow">↗</span></a>
+        <a class="tool-card" href="/add-page-numbers-to-pdf/" data-tool="pages" data-category="organize"><span class="tool-icon slate">#</span><span class="tool-card-title">Page numbers</span><span class="tool-card-copy">Add page numbers to a document.</span><span class="tool-arrow">↗</span></a>
       </div>
     </section>
 
@@ -89,5 +96,19 @@
     <section class="privacy-banner"><div class="privacy-icon" aria-hidden="true">⌑</div><div><h2>Your documents stay in your browser</h2><p>The PDF tools currently process selected files locally in your browser and do not intentionally upload document contents to SAXPDF servers. The site still loads required libraries and may use hosting, analytics, or advertising services. <a href="privacy.html">Read our Privacy Policy</a>.</p></div></section>
   </main>
   <footer class="site-footer"><a class="brand" href="/" aria-label="SAXPDF home"><span class="brand-mark">S</span><span>SAX<span class="brand-accent">PDF</span></span></a><nav class="footer-links" aria-label="Footer"><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Use</a><a href="contact.html">Contact</a></nav><span>© 2026 SAXPDF</span></footer>
+<script>
+(function(){
+  if (window.location.protocol !== "file:") return;
+  var root = new URL("./", window.location.href);
+  document.querySelectorAll('a[href^="/"]').forEach(function(link){
+    var raw = link.getAttribute("href");
+    if (!raw || raw.startsWith("//")) return;
+    var path = raw.slice(1);
+    if (path.endsWith("/")) path += "index.html";
+    if (path === "") path = "index.html";
+    link.href = new URL(path, root).href;
+  });
+})();
+</script>
 </body>
 </html>
