@@ -89,12 +89,34 @@
     try{
       if(!activeTool)throw Error("Choose a tool first.");
       if(!files.length)throw Error("Add files first.");
-      if(activeTool==="merge"){
-        if(files.length<2)throw Error("Choose at least two PDF files to merge.");
-        const out=await PDFLib.PDFDocument.create();
-        for(const f of files){const src=await loadPdf(f);const pages=await out.copyPages(src,src.getPageIndices());pages.forEach(p=>out.addPage(p));}
-        addDownload(new Blob([await out.save()],{type:"application/pdf"}),"merged.pdf");setStatus("Merge complete.");
-      } else if(activeTool==="jpgpdf"){
+      if (activeTool === "merge") {
+  if (files.length < 2) {
+    throw Error("Choose at least two PDF files to merge.");
+  }
+
+  const out = await PDFLib.PDFDocument.create();
+
+  for (const f of files) {
+    const src = await loadPdf(f);
+    const pages = await out.copyPages(src, src.getPageIndices());
+    pages.forEach(p => out.addPage(p));
+  }
+
+  // Use the first selected PDF's original filename
+  const originalName = files[0].name.replace(/\.pdf$/i, "");
+  const outputName = `${originalName}_merged.pdf`;
+
+  addDownload(
+    new Blob([await out.save()], { type: "application/pdf" }),
+    outputName
+  );
+
+ // Clear the old selected files after a successful merge
+  document.getElementById("fileInput").value = "";
+  document.getElementById("fileList").innerHTML = "";
+
+  setStatus("Merge complete. You can select new PDF files.");
+}else if(activeTool==="jpgpdf"){
         const out=await PDFLib.PDFDocument.create();
         for(const f of files){const data=await f.arrayBuffer();const img=f.type==="image/png"?await out.embedPng(data):await out.embedJpg(data);const page=out.addPage([img.width,img.height]);page.drawImage(img,{x:0,y:0,width:img.width,height:img.height});}
         addDownload(new Blob([await out.save()],{type:"application/pdf"}),"images.pdf");setStatus("Image-to-PDF conversion complete.");
