@@ -14,7 +14,7 @@
     jpgpdf: ["JPG to PDF", "Combine JPG or PNG images into a PDF.", "Choose one or more JPG or PNG images."],
     watermark: ["Add watermark", "Place a text watermark on each page.", "Choose a PDF and enter the watermark text."],
     pages: ["Page numbers", "Add page numbers at the bottom of each page.", "Choose a PDF to number."],
-    unprotect: ["Unlock PDF", "Create an unprotected copy of a PDF using its password.", "Choose a password-protected PDF. Enter its password to unlock it."]
+    unprotect: ["Unlock PDF", "Create an unprotected, image-only copy using the PDF password.", "Choose a PDF. Its pages will become images, so text will not be selectable."]
   };
   const bytesLabel = n => n < 1024 ? `${n} B` : n < 1048576 ? `${(n/1024).toFixed(1)} KB` : `${(n/1048576).toFixed(2)} MB`;
   const safeName = name => name.replace(/\.pdf$/i, "").replace(/[^a-z0-9_-]+/gi, "_").slice(0, 60) || "document";
@@ -44,6 +44,7 @@
     optionsBox.classList.remove("hidden");
   }
   function option(name){return optionsBox.querySelector(`[data-option="${name}"]`)?.value ?? "";}
+  function clearPassword(){const input=optionsBox?.querySelector('[data-option="password"]');if(input)input.value="";}
   function parseRange(text,total){
     if(!text.trim()) return Array.from({length:total},(_,i)=>i);
     const out=new Set();
@@ -53,7 +54,7 @@
   function renderFiles(){
     if (!fileList || !runBtn) return;
     fileList.replaceChildren();
-    files.forEach((f,i)=>{const row=document.createElement("div");row.className="file-row";const icon=document.createElement("span");icon.className="mini-pdf";icon.textContent=f.type.startsWith("image/")?"IMG":"PDF";const info=document.createElement("div");info.className="file-info";const b=document.createElement("b");b.textContent=f.name;const sm=document.createElement("small");sm.textContent=bytesLabel(f.size);info.append(b,sm);const remove=document.createElement("button");remove.className="remove-file";remove.type="button";remove.textContent="Remove";remove.setAttribute("aria-label",`Remove ${f.name}`);remove.onclick=()=>{files.splice(i,1);renderFiles();clearDownloads();};row.append(icon,info,remove);fileList.append(row);});
+    files.forEach((f,i)=>{const row=document.createElement("div");row.className="file-row";const icon=document.createElement("span");icon.className="mini-pdf";icon.textContent=f.type.startsWith("image/")?"IMG":"PDF";const info=document.createElement("div");info.className="file-info";const b=document.createElement("b");b.textContent=f.name;const sm=document.createElement("small");sm.textContent=bytesLabel(f.size);info.append(b,sm);const remove=document.createElement("button");remove.className="remove-file";remove.type="button";remove.textContent="Remove";remove.setAttribute("aria-label",`Remove ${f.name}`);remove.onclick=()=>{files.splice(i,1);if(activeTool==="unprotect")clearPassword();renderFiles();clearDownloads();};row.append(icon,info,remove);fileList.append(row);});
     runBtn.disabled=!files.length;runBtn.innerHTML=files.length?`Process ${files.length} file${files.length===1?"":"s"} <span>→</span>`:"Choose files first <span>→</span>";
   }
   function chooseTool(tool, scroll=true){
@@ -73,7 +74,7 @@
     const chosen=[...selected]; if(!chosen.length)return;
     if(activeTool==="jpgpdf"){const valid=chosen.filter(f=>["image/jpeg","image/png"].includes(f.type));if(valid.length!==chosen.length){setStatus("Please select JPG or PNG images only.",true);return;}files=[...files,...valid];}
     else {const valid=chosen.filter(f=>f.type==="application/pdf"||f.name.toLowerCase().endsWith(".pdf"));if(valid.length!==chosen.length){setStatus("Please select PDF files only.",true);return;}files=activeTool==="merge"?[...files,...valid]:valid.slice(0,1);}
-    clearDownloads();setStatus("");renderFiles();
+    if(activeTool==="unprotect")clearPassword();clearDownloads();setStatus("");renderFiles();
   }
   if (dropzone && fileInput) {
     dropzone.addEventListener("click",()=>fileInput.click());dropzone.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();fileInput.click();}});
@@ -82,7 +83,7 @@
     ["dragleave","drop"].forEach(ev=>dropzone.addEventListener(ev,e=>{e.preventDefault();dropzone.classList.remove("dragover");}));
     dropzone.addEventListener("drop",e=>acceptFiles(e.dataTransfer.files));
   }
-  const clearBtn=$("#clearBtn"); if(clearBtn) clearBtn.addEventListener("click",()=>{files=[];renderFiles();clearDownloads();setStatus("");});
+  const clearBtn=$("#clearBtn"); if(clearBtn) clearBtn.addEventListener("click",()=>{files=[];if(activeTool==="unprotect")clearPassword();renderFiles();clearDownloads();setStatus("");});
   const menuToggle=$("#menuToggle"); if(menuToggle) menuToggle.addEventListener("click",()=>$(".topnav").classList.toggle("open"));
 
   async function loadPdf(file){return PDFLib.PDFDocument.load(await file.arrayBuffer());}
@@ -103,28 +104,32 @@
           throw error;
         }
         const output=await PDFLib.PDFDocument.create();
-        for(let pageNumber=1;pageNumber<=source.numPages;pageNumber++){
-          const page=await source.getPage(pageNumber);
-          const baseViewport=page.getViewport({scale:1});
-          const viewport=page.getViewport({scale:1.5});
-          const canvas=document.createElement("canvas");
-          canvas.width=Math.ceil(viewport.width);canvas.height=Math.ceil(viewport.height);
-          const context=canvas.getContext("2d");
-          if(!context)throw Error("Your browser could not prepare a page for conversion.");
-          await page.render({canvasContext:context,viewport}).promise;
-          const imageBlob=await new Promise(resolve=>canvas.toBlob(resolve,"image/jpeg",.92));
-          canvas.width=canvas.height=0;
-          if(!imageBlob)throw Error(`Could not render page ${pageNumber}.`);
-          const image=await output.embedJpg(await imageBlob.arrayBuffer());
-          const outputPage=output.addPage([baseViewport.width,baseViewport.height]);
-          outputPage.drawImage(image,{x:0,y:0,width:baseViewport.width,height:baseViewport.height});
-          setStatus(`Converting page ${pageNumber} of ${source.numPages}…`);
+        let outputBytes;
+        try{
+          for(let pageNumber=1;pageNumber<=source.numPages;pageNumber++){
+            const page=await source.getPage(pageNumber);
+            const baseViewport=page.getViewport({scale:1});
+            const viewport=page.getViewport({scale:1.5});
+            const canvas=document.createElement("canvas");
+            canvas.width=Math.ceil(viewport.width);canvas.height=Math.ceil(viewport.height);
+            const context=canvas.getContext("2d");
+            if(!context)throw Error("Your browser could not prepare a page for conversion.");
+            await page.render({canvasContext:context,viewport}).promise;
+            const imageBlob=await new Promise(resolve=>canvas.toBlob(resolve,"image/jpeg",.92));
+            canvas.width=canvas.height=0;
+            if(!imageBlob)throw Error(`Could not render page ${pageNumber}.`);
+            const image=await output.embedJpg(await imageBlob.arrayBuffer());
+            const outputPage=output.addPage([baseViewport.width,baseViewport.height]);
+            outputPage.drawImage(image,{x:0,y:0,width:baseViewport.width,height:baseViewport.height});
+            setStatus(`Converting page ${pageNumber} of ${source.numPages}…`);
+          }
+          outputBytes=await output.save();
+        }finally{
+          await source.destroy();
         }
-        await source.destroy();
-        addDownload(new Blob([await output.save()],{type:"application/pdf"}),`${safeName(files[0].name)}-unlocked.pdf`);
-        const passwordInput=optionsBox.querySelector('[data-option="password"]');
-        if(passwordInput)passwordInput.value="";
-        setStatus("PDF unlocked. The output is unprotected; pages are rasterized and text will not be selectable.");
+        addDownload(new Blob([outputBytes],{type:"application/pdf"}),`${safeName(files[0].name)}-unlocked.pdf`);
+        clearPassword();
+        setStatus("PDF unlocked. The output has no password protection; its pages are rasterized and text is not selectable.");
       } else if (activeTool === "merge") {
   if (files.length < 2) {
     throw Error("Choose at least two PDF files to merge.");
