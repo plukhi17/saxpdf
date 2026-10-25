@@ -13,7 +13,8 @@
     jpg: ["PDF to JPG", "Render PDF pages as JPG images and download them individually.", "Choose one PDF. PDF.js is required."],
     jpgpdf: ["JPG to PDF", "Combine JPG or PNG images into a PDF.", "Choose one or more JPG or PNG images."],
     watermark: ["Add watermark", "Place a text watermark on each page.", "Choose a PDF and enter the watermark text."],
-    pages: ["Page numbers", "Add page numbers at the bottom of each page.", "Choose a PDF to number."]
+    pages: ["Page numbers", "Add page numbers at the bottom of each page.", "Choose a PDF to number."],
+    unprotect: ["Unlock PDF", "Create an unprotected copy of a PDF using its password.", "Choose a password-protected PDF. Enter its password to unlock it."]
   };
   const bytesLabel = n => n < 1024 ? `${n} B` : n < 1048576 ? `${(n/1024).toFixed(1)} KB` : `${(n/1048576).toFixed(2)} MB`;
   const safeName = name => name.replace(/\.pdf$/i, "").replace(/[^a-z0-9_-]+/gi, "_").slice(0, 60) || "document";
@@ -36,9 +37,10 @@
     if(activeTool==="rotate"){addOption("Rotation","select","angle","90",{choices:[["90","90° clockwise"],["180","180°"],["270","270° clockwise"]]});addOption("Page range (blank = all)","text","range","",{wide:true});}
     if(activeTool==="crop"){addOption("Top margin (points)","number","top","20",{min:0,max:10000});addOption("Right margin (points)","number","right","20",{min:0,max:10000});addOption("Bottom margin (points)","number","bottom","20",{min:0,max:10000});addOption("Left margin (points)","number","left","20",{min:0,max:10000});}
     if(activeTool==="watermark"){addOption("Watermark text","text","text","CONFIDENTIAL",{wide:true});}
+    if(activeTool==="unprotect"){addOption("PDF password","password","password","",{wide:true});}
     if(activeTool==="jpgpdf"){fileInput.accept="image/jpeg,image/png";fileInput.multiple=true;}
     else {fileInput.accept="application/pdf";fileInput.multiple=activeTool==="merge";}
-    if(!["merge","split","jpg","jpgpdf"].includes(activeTool)) addOption("Page range (blank = all, e.g. 1-3)","text","range","",{wide:true});
+    if(!["merge","split","jpg","jpgpdf","unprotect"].includes(activeTool)) addOption("Page range (blank = all, e.g. 1-3)","text","range","",{wide:true});
     optionsBox.classList.remove("hidden");
   }
   function option(name){return optionsBox.querySelector(`[data-option="${name}"]`)?.value ?? "";}
@@ -89,7 +91,41 @@
     try{
       if(!activeTool)throw Error("Choose a tool first.");
       if(!files.length)throw Error("Add files first.");
-      if (activeTool === "merge") {
+      if(activeTool==="unprotect"){
+        if(!window.pdfjsLib)throw Error("PDF.js did not load. Check your internet connection and reload.");
+        if(!window.PDFLib)throw Error("PDF-Lib did not load. Check your internet connection and reload.");
+        pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+        let source;
+        try{
+          source=await pdfjsLib.getDocument({data:await files[0].arrayBuffer(),password:option("password")}).promise;
+        }catch(error){
+          if(error?.name==="PasswordException")throw Error("The password is missing or incorrect. Check it and try again.");
+          throw error;
+        }
+        const output=await PDFLib.PDFDocument.create();
+        for(let pageNumber=1;pageNumber<=source.numPages;pageNumber++){
+          const page=await source.getPage(pageNumber);
+          const baseViewport=page.getViewport({scale:1});
+          const viewport=page.getViewport({scale:1.5});
+          const canvas=document.createElement("canvas");
+          canvas.width=Math.ceil(viewport.width);canvas.height=Math.ceil(viewport.height);
+          const context=canvas.getContext("2d");
+          if(!context)throw Error("Your browser could not prepare a page for conversion.");
+          await page.render({canvasContext:context,viewport}).promise;
+          const imageBlob=await new Promise(resolve=>canvas.toBlob(resolve,"image/jpeg",.92));
+          canvas.width=canvas.height=0;
+          if(!imageBlob)throw Error(`Could not render page ${pageNumber}.`);
+          const image=await output.embedJpg(await imageBlob.arrayBuffer());
+          const outputPage=output.addPage([baseViewport.width,baseViewport.height]);
+          outputPage.drawImage(image,{x:0,y:0,width:baseViewport.width,height:baseViewport.height});
+          setStatus(`Converting page ${pageNumber} of ${source.numPages}…`);
+        }
+        await source.destroy();
+        addDownload(new Blob([await output.save()],{type:"application/pdf"}),`${safeName(files[0].name)}-unlocked.pdf`);
+        const passwordInput=optionsBox.querySelector('[data-option="password"]');
+        if(passwordInput)passwordInput.value="";
+        setStatus("PDF unlocked. The output is unprotected; pages are rasterized and text will not be selectable.");
+      } else if (activeTool === "merge") {
   if (files.length < 2) {
     throw Error("Choose at least two PDF files to merge.");
   }
