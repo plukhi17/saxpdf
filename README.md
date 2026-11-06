@@ -1,8 +1,8 @@
 # SAXPDF SEO-ready static project
 
 ## Included
-- `index.html`: homepage with crawlable links to all nine tool pages.
-- Nine dedicated tool pages in folders: `merge-pdf/`, `split-pdf/`, `rotate-pdf/`, `crop-pdf/`, `pdf-to-jpg/`, `jpg-to-pdf/`, `unlock-pdf/`, `add-watermark-to-pdf/`, `add-page-numbers-to-pdf/`.
+- `index.html`: homepage with crawlable links to all ten tool pages.
+- Ten dedicated tool pages in folders: `merge-pdf/`, `compress-pdf/`, `split-pdf/`, `rotate-pdf/`, `crop-pdf/`, `pdf-to-jpg/`, `jpg-to-pdf/`, `unlock-pdf/`, `add-watermark-to-pdf/`, `add-page-numbers-to-pdf/`.
 - `app.js` and `styles.css`: shared tool logic and design.
 - `sitemap.xml` and `robots.txt`.
 - `privacy.html`, `terms.html`, `contact.html`, and `legal.css`.
@@ -29,5 +29,6 @@
 ## Tool behavior notes
 - The crop tool sets the PDF crop box; it does not securely erase underlying content outside the crop boundary.
 - PDF-to-JPG creates one downloadable JPG per page.
+- PDF compression offers Low, Recommended, High, and best-effort target-size modes. It rasterizes pages to compress image data, so output text is not selectable/searchable and interactive PDF features are not retained.
 - JPG-to-PDF supports JPG/JPEG and PNG.
 - Unlock PDF requires the PDF password. Its output renders each page as an image, so text is not selectable or searchable.

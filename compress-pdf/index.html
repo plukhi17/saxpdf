@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Compress PDF Online Free – Reduce PDF File Size | SAXPDF</title>
+  <meta name="description" content="Compress PDF files online for free. Reduce PDF size to 100KB, 200KB, 500KB or your preferred size while maintaining document quality. Fast and private PDF compression.">
+  <link rel="canonical" href="https://www.saxpdf.com/compress-pdf/">
+  <meta name="robots" content="index,follow">
+  <link rel="stylesheet" href="../styles.css">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-0HQPKYNRGJ"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-0HQPKYNRGJ');</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script defer src="./compress.js"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "SoftwareApplication",
+        "name": "SAXPDF PDF Compressor",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "description": "Compress PDF files in your browser with quality presets or a target file size."
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.saxpdf.com/" },
+          { "@type": "ListItem", "position": 2, "name": "Compress PDF", "item": "https://www.saxpdf.com/compress-pdf/" }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+<header class="topbar"><a class="brand" href="/" aria-label="SAXPDF home"><span class="brand-mark">S</span><span>SAX<span class="brand-accent">PDF</span></span></a><nav class="topnav"><a href="/#tools">All tools</a><a href="/#how">How it works</a><a href="/privacy.html">Privacy</a><a class="nav-cta" href="#workspace">Compress PDF</a></nav><button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">☰</button></header>
+<main>
+  <section class="tool-hero">
+    <p class="breadcrumbs"><a href="/">Home</a> / <a href="/#tools">PDF tools</a> / Compress PDF</p>
+    <p class="eyebrow">SAXPDF · OPTIMIZE TOOL</p>
+    <h1>Compress PDF Online for Free</h1>
+    <p class="lead">Reduce PDF file size with quality presets or a target size. Your files are processed locally in your browser.</p>
+    <div class="hero-links"><a class="primary-btn" href="#workspace">Compress a PDF <span aria-hidden="true">↓</span></a><a class="secondary-btn" href="/#tools">Explore all tools</a></div>
+  </section>
+  <section class="workspace-section tool-workspace" id="workspace">
+    <div class="workspace-heading"><div><p class="eyebrow">PDF WORKSPACE</p><h2>Make your PDF smaller</h2><p class="muted">Add one or more files, choose a compression level, and download each result.</p></div><span class="local-badge"><span></span> Local processing</span></div>
+    <div class="workspace-card"><div class="workspace-main">
+      <div class="dropzone compress-dropzone" id="dropzone" tabindex="0" role="button" aria-label="Choose PDF files">
+        <div class="upload-symbol">↑</div><h3>Drop your PDF files here</h3><p>or <span>browse files</span> from your device</p><small>PDF files only · Multiple files supported</small>
+        <input id="fileInput" type="file" accept="application/pdf,.pdf" multiple hidden>
+      </div>
+      <p class="compress-error" id="uploadError" role="alert"></p>
+      <div id="fileList" class="file-list" aria-live="polite"></div>
+      <fieldset class="compression-settings">
+        <legend>Compression settings</legend>
+        <label class="setting-label" for="compressionMode">Compression level</label>
+        <select id="compressionMode">
+          <option value="low">Low Compression — preserve maximum quality</option>
+          <option value="recommended" selected>Recommended Compression — balance size and quality</option>
+          <option value="high">High Compression — prioritize smaller size</option>
+          <option value="target">Target file size</option>
+        </select>
+        <div id="targetOptions" class="target-options hidden">
+          <label class="setting-label" for="targetSize">Target size</label>
+          <select id="targetSize">
+            <option value="102400">100 KB</option>
+            <option value="204800">200 KB</option>
+            <option value="512000">500 KB</option>
+            <option value="1048576">1 MB</option>
+            <option value="custom">Custom</option>
+          </select>
+          <div id="customTarget" class="custom-target hidden"><label class="setting-label" for="customSize">Custom target</label><input id="customSize" type="number" min="10" max="102400" value="750" inputmode="numeric"><span>KB</span></div>
+          <p class="settings-note">Target sizes are best-effort. Some PDFs cannot be reduced to the requested size without making them unreadable.</p>
+        </div>
+        <p class="settings-note">Compression rebuilds pages as images to reduce their size. Text selection, search, links, forms, and accessibility structure will not be preserved.</p>
+      </fieldset>
+      <div class="workspace-actions"><button class="secondary-btn" id="clearBtn" type="button" disabled>Clear files</button><button class="primary-btn" id="runBtn" type="button" disabled>Choose files first <span>→</span></button></div>
+      <div id="progressWrap" class="progress-wrap hidden" aria-live="polite"><div class="progress-copy"><span id="progressStatus">Preparing…</span><span id="progressPercent">0%</span></div><progress id="progressBar" max="100" value="0">0%</progress></div>
+      <p id="status" class="status" aria-live="polite"></p>
+      <div id="results" class="compression-results" aria-live="polite"></div>
+      <button class="secondary-btn compress-another hidden" id="anotherBtn" type="button">Compress another PDF</button>
+    </div><aside class="workspace-aside"><div class="aside-icon">✦</div><h3>Smaller, in a few steps.</h3><p>Choose the size-quality balance that works for your document.</p><div class="aside-rule"></div><div class="aside-point"><span>01</span><div><b>Select PDFs</b><small>Add one file or a batch.</small></div></div><div class="aside-point"><span>02</span><div><b>Set compression</b><small>Choose a preset or target size.</small></div></div><div class="aside-point"><span>03</span><div><b>Download results</b><small>Review the savings for each file.</small></div></div></aside></div>
+  </section>
+  <section class="tool-page-content">
+    <div class="content-block"><h2>How to compress a PDF</h2><p>Reduce the size of your PDF online in three simple steps:</p><div class="steps-grid"><article><h3>01. Upload your PDF file or add multiple PDFs.</h3></article><article><h3>02. Choose a quality preset or set a target file size.</h3></article><article><h3>03. Compress the files, review the results, and download each PDF.</h3></article></div></div>
+    <div class="content-block"><h2>Choose your compression level</h2><p>Low Compression uses higher image quality and resolution. Recommended Compression balances readability and file size for most documents. High Compression uses smaller, lower-quality page images. Target-size compression tries progressively smaller image settings, but reaching an exact file size is not always possible.</p><p>Because this browser-based tool reconstructs pages as images, the output may not retain selectable/searchable text, hyperlinks, interactive forms, signatures, or document accessibility tags. Keep an original copy when those features matter.</p></div>
+    <div class="content-block"><div class="tool-privacy-note"><h3>File privacy</h3><p>PDF contents are processed locally in your browser and are not intentionally uploaded to SAXPDF servers. The page loads third-party PDF libraries and the site may use hosting, analytics, or advertising services. See the <a href="/privacy.html"><u>Privacy Policy</u></a> for details. Large or image-heavy PDFs may need significant memory and processing time on your device.</p></div></div>
+    <div class="content-block"><h2>Frequently asked questions</h2>
+      <div class="faq-item"><h3>Can I compress PDFs to 100 KB, 200 KB, 500 KB, or 1 MB?</h3><p>Select Target file size and choose a preset or enter a custom size. The tool makes a best effort; very large or complex PDFs may not reach the requested size while remaining legible.</p></div>
+      <div class="faq-item"><h3>Will compression keep the text selectable?</h3><p>No. To reduce image data consistently in a browser, each page is rebuilt as an image. The output will not preserve selectable/searchable text, links, forms, signatures, or accessibility structure.</p></div>
+      <div class="faq-item"><h3>Can I compress scanned or image-heavy PDFs?</h3><p>Yes. Scanned and image-heavy files can benefit most from image compression. The amount saved depends on the original images and the chosen quality setting.</p></div>
+      <div class="faq-item"><h3>Can I compress a password-protected PDF?</h3><p>Password-protected or encrypted PDFs are not supported. Remove the password with permission and upload an unprotected copy.</p></div>
+      <div class="faq-item"><h3>Is there a file size limit?</h3><p>There is no fixed upload limit in this page, but your browser and device memory determine what can be processed. Very large documents may take longer or fail if the device runs out of memory.</p></div>
+    </div>
+    <div class="content-block"><h2>Related PDF tools</h2><div class="related-tools"><a href="/merge-pdf/">Merge PDF</a><a href="/split-pdf/">Split PDF</a><a href="/pdf-to-jpg/">PDF to JPG</a><a href="/jpg-to-pdf/">JPG to PDF</a></div></div>
+  </section>
+</main>
+<footer class="site-footer"><a class="brand" href="/" aria-label="SAXPDF home"><span class="brand-mark">S</span><span>SAX<span class="brand-accent">PDF</span></span></a><nav class="footer-links" aria-label="Footer"><a href="/privacy.html">Privacy Policy</a><a href="/terms.html">Terms of Use</a><a href="/contact.html">Contact</a></nav><span>© 2026 SAXPDF</span></footer>
+<script>
+(function(){
+  if (window.location.protocol !== "file:") return;
+  var root = new URL("../", window.location.href);
+  document.querySelectorAll('a[href^="/"]').forEach(function(link){
+    var raw = link.getAttribute("href");
+    if (!raw || raw.startsWith("//")) return;
+    var path = raw.slice(1);
+    if (path.endsWith("/")) path += "index.html";
+    if (path === "") path = "index.html";
+    link.href = new URL(path, root).href;
+  });
+})();
+</script>
+</body>
+</html>
