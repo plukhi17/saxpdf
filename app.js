@@ -4,6 +4,7 @@
   const fileInput = $("#fileInput"), dropzone = $("#dropzone"), fileList = $("#fileList");
   const optionsBox = $("#toolOptions"), runBtn = $("#runBtn"), status = $("#status"), downloadArea = $("#downloadArea");
   const workspaceTitle = $("#workspaceTitle"), workspaceDescription = $("#workspaceDescription"), fileHint = $("#fileHint");
+  const workspace = $("#workspace");
   let files = [], activeTool = null, objectUrls = [];
   const toolInfo = {
     merge: ["Merge PDF", "Combine two or more PDFs in the order shown.", "Select at least two PDF files."],
@@ -45,6 +46,13 @@
   }
   function option(name){return optionsBox.querySelector(`[data-option="${name}"]`)?.value ?? "";}
   function clearPassword(){const input=optionsBox?.querySelector('[data-option="password"]');if(input)input.value="";}
+  function animateFileArrival(){
+    if(!dropzone)return;
+    dropzone.classList.remove("file-added");
+    void dropzone.offsetWidth;
+    dropzone.classList.add("file-added");
+    window.setTimeout(()=>dropzone.classList.remove("file-added"),650);
+  }
   function parseRange(text,total){
     if(!text.trim()) return Array.from({length:total},(_,i)=>i);
     const out=new Set();
@@ -60,9 +68,10 @@
   function chooseTool(tool, scroll=true){
     if (!toolInfo[tool]) return;
     activeTool=tool; const info=toolInfo[tool]; if(workspaceTitle) workspaceTitle.textContent=info[0]; if(workspaceDescription) workspaceDescription.textContent=info[1]; if(fileHint) fileHint.textContent=info[2];
+    if(workspace){workspace.dataset.motionTool=tool;workspace.dataset.state="ready";workspace.classList.remove("is-processing");}
     buildOptions(); clearDownloads(); setStatus(""); document.querySelectorAll(".tool-card").forEach(c=>c.classList.toggle("selected",c.dataset.tool===tool));
     if(tool==="jpgpdf") files=[]; renderFiles();
-    const workspace=$("#workspace"); if(scroll && workspace) workspace.scrollIntoView({behavior:"smooth",block:"start"});
+    if(scroll && workspace) workspace.scrollIntoView({behavior:"smooth",block:"start"});
   }
   document.querySelectorAll(".tool-card[data-tool]").forEach(card=>{
     if(card.tagName.toLowerCase() === "button") card.addEventListener("click",()=>chooseTool(card.dataset.tool));
@@ -74,7 +83,7 @@
     const chosen=[...selected]; if(!chosen.length)return;
     if(activeTool==="jpgpdf"){const valid=chosen.filter(f=>["image/jpeg","image/png"].includes(f.type));if(valid.length!==chosen.length){setStatus("Please select JPG or PNG images only.",true);return;}files=[...files,...valid];}
     else {const valid=chosen.filter(f=>f.type==="application/pdf"||f.name.toLowerCase().endsWith(".pdf"));if(valid.length!==chosen.length){setStatus("Please select PDF files only.",true);return;}files=activeTool==="merge"?[...files,...valid]:valid.slice(0,1);}
-    if(activeTool==="unprotect")clearPassword();clearDownloads();setStatus("");renderFiles();
+    if(activeTool==="unprotect")clearPassword();clearDownloads();setStatus("");if(workspace){workspace.dataset.state="ready";workspace.classList.remove("is-processing");}renderFiles();animateFileArrival();
   }
   if (dropzone && fileInput) {
     dropzone.addEventListener("click",()=>fileInput.click());dropzone.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();fileInput.click();}});
@@ -83,15 +92,18 @@
     ["dragleave","drop"].forEach(ev=>dropzone.addEventListener(ev,e=>{e.preventDefault();dropzone.classList.remove("dragover");}));
     dropzone.addEventListener("drop",e=>acceptFiles(e.dataTransfer.files));
   }
-  const clearBtn=$("#clearBtn"); if(clearBtn) clearBtn.addEventListener("click",()=>{files=[];if(activeTool==="unprotect")clearPassword();renderFiles();clearDownloads();setStatus("");});
+  const clearBtn=$("#clearBtn"); if(clearBtn) clearBtn.addEventListener("click",()=>{files=[];if(activeTool==="unprotect")clearPassword();renderFiles();clearDownloads();setStatus("");if(workspace){workspace.dataset.state="ready";workspace.classList.remove("is-processing");}});
   const menuToggle=$("#menuToggle"); if(menuToggle) menuToggle.addEventListener("click",()=>$(".topnav").classList.toggle("open"));
 
   async function loadPdf(file){return PDFLib.PDFDocument.load(await file.arrayBuffer());}
   async function process(){
+    let completed=false;
     clearDownloads(); setStatus("Processing…");runBtn.disabled=true;
+    if(workspace){workspace.dataset.state="processing";workspace.classList.add("is-processing");}
     try{
       if(!activeTool)throw Error("Choose a tool first.");
       if(!files.length)throw Error("Add files first.");
+      await new Promise(resolve=>requestAnimationFrame(resolve));
       if(activeTool==="unprotect"){
         if(!window.pdfjsLib)throw Error("PDF.js did not load. Check your internet connection and reload.");
         if(!window.PDFLib)throw Error("PDF-Lib did not load. Check your internet connection and reload.");
@@ -107,6 +119,7 @@
         let outputBytes;
         try{
           for(let pageNumber=1;pageNumber<=source.numPages;pageNumber++){
+            setStatus(`Preparing page ${pageNumber} of ${source.numPages} for unlock…`);
             const page=await source.getPage(pageNumber);
             const baseViewport=page.getViewport({scale:1});
             const viewport=page.getViewport({scale:1.5});
@@ -121,7 +134,7 @@
             const image=await output.embedJpg(await imageBlob.arrayBuffer());
             const outputPage=output.addPage([baseViewport.width,baseViewport.height]);
             outputPage.drawImage(image,{x:0,y:0,width:baseViewport.width,height:baseViewport.height});
-            setStatus(`Converting page ${pageNumber} of ${source.numPages}…`);
+            setStatus(`Unlocking page ${pageNumber} of ${source.numPages}…`);
           }
           outputBytes=await output.save();
         }finally{
@@ -137,7 +150,8 @@
 
   const out = await PDFLib.PDFDocument.create();
 
-  for (const f of files) {
+  for (const [fileIndex, f] of files.entries()) {
+    setStatus(`Combining document ${fileIndex + 1} of ${files.length}…`);
     const src = await loadPdf(f);
     const pages = await out.copyPages(src, src.getPageIndices());
     pages.forEach(p => out.addPage(p));
@@ -159,32 +173,36 @@
   setStatus("Merge complete. You can select new PDF files.");
 }else if(activeTool==="jpgpdf"){
         const out=await PDFLib.PDFDocument.create();
-        for(const f of files){const data=await f.arrayBuffer();const img=f.type==="image/png"?await out.embedPng(data):await out.embedJpg(data);const page=out.addPage([img.width,img.height]);page.drawImage(img,{x:0,y:0,width:img.width,height:img.height});}
+        for(const [imageIndex,f] of files.entries()){setStatus(`Adding image ${imageIndex+1} of ${files.length}…`);const data=await f.arrayBuffer();const img=f.type==="image/png"?await out.embedPng(data):await out.embedJpg(data);const page=out.addPage([img.width,img.height]);page.drawImage(img,{x:0,y:0,width:img.width,height:img.height});}
         addDownload(new Blob([await out.save()],{type:"application/pdf"}),"images.pdf");setStatus("Image-to-PDF conversion complete.");
       } else if(activeTool==="jpg"){
         if(!window.pdfjsLib)throw Error("PDF.js did not load. Check your internet connection and reload.");
         pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
         const pdf=await pdfjsLib.getDocument({data:await files[0].arrayBuffer()}).promise;
-        for(let i=1;i<=pdf.numPages;i++){const page=await pdf.getPage(i);const viewport=page.getViewport({scale:1.5});const canvas=document.createElement("canvas");canvas.width=viewport.width;canvas.height=viewport.height;await page.render({canvasContext:canvas.getContext("2d"),viewport}).promise;const blob=await new Promise(resolve=>canvas.toBlob(resolve,"image/jpeg",.92));addDownload(blob,`${safeName(files[0].name)}-page-${i}.jpg`,`Page ${i}`);canvas.width=canvas.height=0;}
+        for(let i=1;i<=pdf.numPages;i++){setStatus(`Rendering page ${i} of ${pdf.numPages} as JPG…`);const page=await pdf.getPage(i);const viewport=page.getViewport({scale:1.5});const canvas=document.createElement("canvas");canvas.width=viewport.width;canvas.height=viewport.height;await page.render({canvasContext:canvas.getContext("2d"),viewport}).promise;const blob=await new Promise(resolve=>canvas.toBlob(resolve,"image/jpeg",.92));addDownload(blob,`${safeName(files[0].name)}-page-${i}.jpg`,`Page ${i}`);canvas.width=canvas.height=0;}
         setStatus(`Rendered ${pdf.numPages} page(s). Download each JPG below.`);
       } else {
         const pdf=await loadPdf(files[0]), pages=pdf.getPages(), indices=parseRange(option("range"),pages.length);
         if(activeTool==="split"){
+          setStatus(`Extracting ${indices.length} page${indices.length===1?"":"s"}…`);
           const out=await PDFLib.PDFDocument.create();const copied=await out.copyPages(pdf,indices);copied.forEach(p=>out.addPage(p));addDownload(new Blob([await out.save()],{type:"application/pdf"}),`${safeName(files[0].name)}-split.pdf`);setStatus("Page extraction complete.");
         } else {
           if(!indices.length)throw Error("Choose at least one page.");
-          if(activeTool==="rotate"){const angle=Number(option("angle"));indices.forEach(i=>pages[i].setRotation(PDFLib.degrees((pages[i].getRotation().angle+angle)%360)));}
+          if(activeTool==="rotate"){const angle=Number(option("angle"));setStatus(`Rotating ${indices.length} page${indices.length===1?"":"s"}…`);indices.forEach(i=>pages[i].setRotation(PDFLib.degrees((pages[i].getRotation().angle+angle)%360)));}
           if(activeTool==="crop"){
+            setStatus(`Cropping ${indices.length} page${indices.length===1?"":"s"}…`);
             const margins={top:Number(option("top")),right:Number(option("right")),bottom:Number(option("bottom")),left:Number(option("left"))};
             if(Object.values(margins).some(n=>!Number.isFinite(n)||n<0))throw Error("Margins must be non-negative numbers.");
             indices.forEach(i=>{const p=pages[i], size=p.getSize(), w=size.width-margins.left-margins.right,h=size.height-margins.top-margins.bottom;if(w<=0||h<=0)throw Error("Crop margins are too large for one or more pages.");p.setCropBox(margins.left,margins.bottom,w,h);});
           }
           if(activeTool==="watermark"){
             const text=option("text").trim();if(!text)throw Error("Enter watermark text.");
+            setStatus(`Adding watermark to ${indices.length} page${indices.length===1?"":"s"}…`);
             const font=await pdf.embedFont(PDFLib.StandardFonts.Helvetica);
             indices.forEach(i=>{const p=pages[i],size=p.getSize();p.drawText(text,{x:size.width*.12,y:size.height*.5,size:Math.max(18,Math.min(size.width,size.height)*.045),font,color:PDFLib.rgb(.75,.18,.22),opacity:.32,rotate:PDFLib.degrees(30),maxWidth:size.width*.8});});
           }
           if(activeTool==="pages"){
+            setStatus(`Numbering ${indices.length} page${indices.length===1?"":"s"}…`);
             const font=await pdf.embedFont(PDFLib.StandardFonts.Helvetica);
             indices.forEach(i=>{const p=pages[i],size=p.getSize(),label=String(i+1),fontSize=10;p.drawText(label,{x:(size.width-font.widthOfTextAtSize(label,fontSize))/2,y:18,size:fontSize,font,color:PDFLib.rgb(.25,.28,.35)});});
           }
@@ -192,10 +210,61 @@
           addDownload(new Blob([await pdf.save()],{type:"application/pdf"}),`${safeName(files[0].name)}-${activeTool}.pdf`);setStatus(`${label} complete.`);
         }
       }
+      completed=true;
     }catch(err){console.error(err);setStatus(err.message||"Could not process this file. It may be invalid or encrypted.",true);}
-    finally{runBtn.disabled=!files.length;runBtn.innerHTML=files.length?`Process ${files.length} file${files.length===1?"":"s"} <span>→</span>`:"Choose files first <span>→</span>";}
+    finally{
+      if(workspace){workspace.classList.remove("is-processing");workspace.dataset.state=completed?"complete":"error";}
+      runBtn.disabled=!files.length;runBtn.innerHTML=files.length?`Process ${files.length} file${files.length===1?"":"s"} <span>→</span>`:"Choose files first <span>→</span>";
+    }
   }
   if (runBtn) runBtn.addEventListener("click",process);
   const pageTool=document.body.dataset.tool;
   if (pageTool) chooseTool(pageTool, false); else if ($("#workspace")) chooseTool("merge", false);
+
+  const reducedMotion=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const finePointer=window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  const lowMemory=typeof navigator.deviceMemory==="number"&&navigator.deviceMemory<=4;
+  const lowPower=lowMemory||(typeof navigator.hardwareConcurrency==="number"&&navigator.hardwareConcurrency<=4);
+  if(lowPower)document.documentElement.classList.add("low-power");
+  const heroArt=$(".hero-art"), heroSection=$(".hero");
+  if(heroArt){
+    if("IntersectionObserver" in window){
+      const observer=new IntersectionObserver(entries=>entries.forEach(entry=>heroArt.classList.toggle("is-visible",entry.isIntersecting)),{threshold:.05});
+      observer.observe(heroArt);
+    }else heroArt.classList.add("is-visible");
+    if(finePointer&&!reducedMotion&&!lowPower&&heroSection){
+      let frame=0;
+      heroSection.addEventListener("pointermove",event=>{
+        if(frame)cancelAnimationFrame(frame);
+        frame=requestAnimationFrame(()=>{
+          const bounds=heroArt.getBoundingClientRect();
+          const x=Math.max(-1,Math.min(1,(event.clientX-(bounds.left+bounds.width/2))/(bounds.width/2)));
+          const y=Math.max(-1,Math.min(1,(event.clientY-(bounds.top+bounds.height/2))/(bounds.height/2)));
+          heroArt.style.setProperty("--hero-x",`${x*12}px`);
+          heroArt.style.setProperty("--hero-y",`${y*10}px`);
+          heroArt.style.setProperty("--hero-rotate-x",`${-y*2.5}deg`);
+          heroArt.style.setProperty("--hero-rotate-y",`${x*3.5}deg`);
+        });
+      },{passive:true});
+      heroSection.addEventListener("pointerleave",()=>{
+        heroArt.style.setProperty("--hero-x","0px");
+        heroArt.style.setProperty("--hero-y","0px");
+        heroArt.style.setProperty("--hero-rotate-x","0deg");
+        heroArt.style.setProperty("--hero-rotate-y","0deg");
+      },{passive:true});
+      document.querySelectorAll(".tool-card").forEach(card=>{
+        card.addEventListener("pointermove",event=>{
+          const bounds=card.getBoundingClientRect();
+          const x=(event.clientX-bounds.left)/bounds.width-.5;
+          const y=(event.clientY-bounds.top)/bounds.height-.5;
+          card.style.setProperty("--card-tilt-x",`${-y*4}deg`);
+          card.style.setProperty("--card-tilt-y",`${x*4}deg`);
+        },{passive:true});
+        card.addEventListener("pointerleave",()=>{
+          card.style.removeProperty("--card-tilt-x");
+          card.style.removeProperty("--card-tilt-y");
+        },{passive:true});
+      });
+    }
+  }
 })();

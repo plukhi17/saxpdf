@@ -19,6 +19,7 @@
   const progressStatus = $("#progressStatus");
   const progressPercent = $("#progressPercent");
   const results = $("#results");
+  const workspace = $("#workspace");
   const menuToggle = $("#menuToggle");
   const files = [];
   const resultUrls = [];
@@ -38,6 +39,13 @@
     resultUrls.forEach((url) => URL.revokeObjectURL(url));
     resultUrls.length = 0;
     results.replaceChildren();
+  }
+
+  function animateFileArrival() {
+    dropzone.classList.remove("file-added");
+    void dropzone.offsetWidth;
+    dropzone.classList.add("file-added");
+    window.setTimeout(() => dropzone.classList.remove("file-added"), 650);
   }
 
   function updateButtons() {
@@ -123,11 +131,14 @@
     }
     uniqueFiles.forEach((file) => files.push({ file, pages: null }));
     inspecting = true;
+    workspace.classList.remove("compression-complete");
+    workspace.dataset.state = "ready";
     renderFiles();
     setStatus("");
     clearResults();
     progressWrap.classList.add("hidden");
     anotherButton.classList.add("hidden");
+    animateFileArrival();
     try {
       for (const entry of files.filter((item) => item.pages === null)) {
         try {
@@ -276,6 +287,10 @@
     }
     processing = true;
     processedCount = 0;
+    let completed = false;
+    workspace.classList.add("compression-active");
+    workspace.classList.remove("compression-complete");
+    workspace.dataset.state = "processing";
     clearResults();
     progressWrap.classList.remove("hidden");
     anotherButton.classList.add("hidden");
@@ -297,6 +312,7 @@
       }
       setStatus(`${processedCount} PDF${processedCount === 1 ? "" : "s"} compressed. Download your file${processedCount === 1 ? "" : "s"} below.`);
       anotherButton.classList.remove("hidden");
+      completed = true;
     } catch (error) {
       console.error(error);
       const message = error?.name === "PasswordException"
@@ -309,6 +325,13 @@
       setStatus(message, true);
     } finally {
       processing = false;
+      workspace.classList.remove("compression-active");
+      if (completed) {
+        workspace.classList.add("compression-complete");
+        workspace.dataset.state = "complete";
+      } else {
+        workspace.dataset.state = "error";
+      }
       updateButtons();
     }
   }
@@ -343,6 +366,8 @@
     uploadError.textContent = "";
     progressWrap.classList.add("hidden");
     anotherButton.classList.add("hidden");
+    workspace.classList.remove("compression-active", "compression-complete");
+    workspace.dataset.state = "ready";
     setStatus("");
     updateButtons();
   });
@@ -354,6 +379,8 @@
     clearResults();
     progressWrap.classList.add("hidden");
     anotherButton.classList.add("hidden");
+    workspace.classList.remove("compression-active", "compression-complete");
+    workspace.dataset.state = "ready";
     uploadError.textContent = "";
     setStatus("");
     updateButtons();

@@ -59,3 +59,114 @@
 .compress-another{margin-top:16px}
 .hidden{display:none!important}
 @media(max-width:760px){.compression-settings{padding:14px}.compression-result dl{grid-template-columns:1fr 1fr}.custom-target{align-items:center;flex-wrap:wrap}.custom-target .setting-label{flex-basis:100%}.custom-target input{max-width:none;flex:1}}
+
+/* Lightweight depth and motion for the existing SAXPDF interface. */
+.hero{isolation:isolate}
+.hero-art{perspective:1100px;transform-style:preserve-3d}
+.hero-art::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 52% 48%,rgba(226,223,255,.55),transparent 58%);filter:blur(18px);pointer-events:none}
+.hero-orb{position:absolute;border-radius:50%;filter:blur(2px);pointer-events:none}
+.hero-orb-one{width:205px;height:205px;top:82px;left:124px;background:radial-gradient(circle at 35% 35%,rgba(255,255,255,.9),rgba(244,91,98,.12) 48%,rgba(110,89,217,.07) 72%,transparent)}
+.hero-orb-two{width:158px;height:158px;right:4px;bottom:36px;background:radial-gradient(circle at 40% 40%,rgba(255,255,255,.9),rgba(110,89,217,.13) 58%,transparent)}
+.hero-particle{position:absolute;z-index:1;width:7px;height:7px;border-radius:50%;background:#fff;box-shadow:0 0 0 5px rgba(110,89,217,.08),0 5px 16px rgba(65,62,132,.18);animation:particle-drift 6s ease-in-out infinite}
+.particle-one{top:102px;right:72px}
+.particle-two{top:306px;left:58px;width:5px;height:5px;animation-delay:-2s}
+.particle-three{bottom:72px;right:126px;width:6px;height:6px;animation-delay:-4s}
+.orbit{pointer-events:none;opacity:.72}
+.document-stack{transform-style:preserve-3d;transform:translate3d(var(--hero-x,0px),var(--hero-y,0px),0) rotateX(var(--hero-rotate-x,0deg)) rotateY(var(--hero-rotate-y,0deg)) rotate(7deg);animation:hero-float 7s ease-in-out infinite}
+.doc{backface-visibility:hidden;transform-style:preserve-3d;box-shadow:0 27px 48px rgba(46,45,91,.16),0 4px 12px rgba(46,45,91,.08)}
+.doc-back{transform:translateZ(-26px) rotate(12deg)}
+.doc-mid{transform:translateZ(-12px) rotate(5deg)}
+.doc-front{transform:translateZ(14px)}
+.doc-float{width:118px;height:154px;padding:17px 14px;opacity:.94;animation:sheet-float 6.5s ease-in-out infinite}
+.doc-float .doc-badge{width:30px;font-size:8px;margin-bottom:15px}
+.doc-float .doc-line{height:4px;margin-bottom:7px}
+.doc-float .doc-block{height:30px;margin:12px 0}
+.doc-float-one{left:-43px;top:42px;transform:translateZ(45px) rotate(-13deg);animation-delay:-1.6s;background:linear-gradient(145deg,#fff,#fbfaff)}
+.doc-float-two{right:-22px;bottom:26px;transform:translateZ(35px) rotate(12deg);animation-delay:-3.3s}
+.doc-stamp{margin-top:15px;padding-top:7px;border-top:1px solid #ececf5;color:#8781b7;font-size:8px;font-weight:850;letter-spacing:1px}
+.doc-stamp small{font-size:5px;letter-spacing:.7px;color:#a6a8b5}
+.floating-card{backdrop-filter:blur(12px);background:rgba(255,255,255,.84);border-color:rgba(255,255,255,.85);box-shadow:0 17px 42px rgba(38,42,82,.13),inset 0 1px rgba(255,255,255,.8);animation:card-hover 6s ease-in-out infinite}
+.card-right{animation-delay:-3s}
+.hero-art.is-visible .document-stack{animation-play-state:running}
+.hero-art:not(.is-visible) .document-stack,.hero-art:not(.is-visible) .hero-particle,.hero-art:not(.is-visible) .floating-card{animation-play-state:paused}
+.tool-card{transform-style:preserve-3d;transition:transform .28s cubic-bezier(.2,.8,.2,1),border-color .25s,box-shadow .25s}
+.tool-card:hover{transform:perspective(900px) rotateX(var(--card-tilt-x,0deg)) rotateY(var(--card-tilt-y,0deg)) translateY(-5px) scale(1.012);border-color:#d8d2f3;box-shadow:0 19px 42px rgba(43,47,91,.13),0 4px 12px rgba(244,91,98,.06)}
+.tool-icon{transform:translateZ(18px);transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s}
+.tool-card:hover .tool-icon{transform:translateZ(27px) rotate(-5deg) scale(1.08);box-shadow:0 8px 16px rgba(42,49,89,.1)}
+.tool-card:focus-visible{outline:3px solid rgba(110,89,217,.28);outline-offset:3px}
+.dropzone{position:relative;isolation:isolate;overflow:hidden}
+.dropzone::before{content:"";position:absolute;z-index:0;width:154px;height:60px;top:22px;right:8%;border-radius:50%;background:radial-gradient(ellipse,rgba(236,233,255,.6),transparent 70%);opacity:.75;pointer-events:none;transition:opacity .25s,transform .25s}
+.upload-symbol{position:relative;box-shadow:0 10px 24px rgba(244,91,98,.13);transform-style:preserve-3d;animation:upload-hover 4.5s ease-in-out infinite}
+.upload-symbol::after{content:"PDF";position:absolute;right:-9px;bottom:-6px;display:grid;place-items:center;width:22px;height:18px;border:2px solid #fff;border-radius:5px;background:var(--coral);color:white;font-size:6px;font-weight:900;letter-spacing:.3px;box-shadow:0 3px 8px rgba(23,35,61,.2);transform:translateZ(12px) rotate(7deg)}
+.dropzone.dragover{border-color:var(--purple);background:linear-gradient(135deg,#fff8f8,#f7f5ff);box-shadow:0 0 0 4px rgba(110,89,217,.08),0 14px 35px rgba(110,89,217,.1)}
+.dropzone.dragover::before{opacity:1;transform:scale(1.28)}
+.dropzone.dragover .upload-symbol{transform:translateY(-5px) scale(1.05);box-shadow:0 14px 30px rgba(110,89,217,.2)}
+.dropzone.file-added .upload-symbol{animation:file-land .55s cubic-bezier(.2,.8,.2,1)}
+.file-row{position:relative;animation:file-arrive .32s cubic-bezier(.2,.8,.2,1) both}
+.workspace-card{transition:box-shadow .35s,border-color .35s}
+.workspace-card:has(.dropzone.dragover){border-color:#d8d2f3;box-shadow:0 16px 42px rgba(46,45,91,.12)}
+.workspace-section.tool-workspace #workspaceTitle{transition:color .25s}
+#workspace.is-processing .workspace-card{box-shadow:0 12px 36px rgba(46,45,91,.1)}
+#workspace[data-state="complete"] .download-link{animation:result-arrive .45s cubic-bezier(.2,.8,.2,1) both}
+#workspace[data-state="complete"][data-motion-tool="merge"] .workspace-heading h2{color:#269a73}
+#workspace[data-state="complete"][data-motion-tool="split"] .workspace-heading h2{color:#269a73}
+.compression-result{animation:result-arrive .45s cubic-bezier(.2,.8,.2,1) both}
+#workspace.compression-active .upload-symbol{animation:compress-pulse .9s ease-in-out infinite alternate}
+#workspace.compression-active .upload-symbol::after{transform:translateZ(12px) rotate(7deg) scale(.82)}
+#workspace.compression-complete .compression-result .download-link{box-shadow:0 9px 22px rgba(244,91,98,.22)}
+.progress-wrap progress::-webkit-progress-value{transition:width .25s ease}
+@keyframes hero-float{0%,100%{translate:0 0}50%{translate:0 -10px}}
+@keyframes sheet-float{0%,100%{margin-top:0}50%{margin-top:-9px}}
+@keyframes card-hover{0%,100%{translate:0 0}50%{translate:0 -7px}}
+@keyframes particle-drift{0%,100%{translate:0 0;opacity:.7}50%{translate:8px -12px;opacity:1}}
+@keyframes upload-hover{0%,100%{translate:0 0;rotate:0deg}50%{translate:0 -4px;rotate:-2deg}}
+@keyframes file-land{0%{transform:translateY(-12px) scale(1.15);opacity:.6}65%{transform:translateY(2px) scale(.96)}100%{transform:translateY(0) scale(1);opacity:1}}
+@keyframes file-arrive{from{opacity:0;transform:translateY(7px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes merge-stack{0%{transform:translateX(0) scale(1)}55%{transform:translateX(9px) scale(.99)}100%{transform:translateX(0) scale(1)}}
+@keyframes split-sheets{0%,100%{transform:translateX(0)}45%{transform:translateX(-5px)}70%{transform:translateX(5px)}}
+@keyframes split-outline{0%,100%{opacity:0;transform:translateX(0)}45%{opacity:1;transform:translateX(-8px)}75%{opacity:.55;transform:translateX(8px)}}
+@keyframes compress-pulse{from{transform:scale(1) translateY(0)}to{transform:scale(.88) translateY(3px)}}
+@keyframes result-arrive{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:1050px){.hero-art{right:1%;transform:scale(.9);transform-origin:center right}.doc-float-one{left:-24px}.doc-float-two{right:-8px}}
+@media(max-width:760px){.hero{min-height:520px}.hero-art{right:-4%;top:84px;transform:scale(.68);transform-origin:top right;opacity:.72}.hero-art .floating-card{display:none}.hero-art .doc-float{opacity:.6}.tool-card:hover{transform:translateY(-3px)}.tool-card:hover .tool-icon{transform:translateZ(0) scale(1.05)}.workspace-card:has(.dropzone.dragover){box-shadow:0 8px 25px rgba(46,45,91,.08)}}
+@media(max-width:460px){.hero-art{right:-20%;top:130px;transform:scale(.56);opacity:.48}.hero h1,.hero-copy,.hero>.primary-btn,.hero .trust-row{position:relative;z-index:2}.hero-copy{max-width:330px}.hero{min-height:530px}}
+@media(hover:none),(pointer:coarse){.tool-card:hover{transform:translateY(-2px);box-shadow:0 10px 25px rgba(43,47,91,.08)}.hero-art{--hero-x:0!important;--hero-y:0!important}}
+@media(prefers-reduced-motion:reduce){.hero-art *,.hero-art,.tool-card,.tool-icon,.upload-symbol,.file-row,.compression-result,.dropzone,.workspace-card{animation:none!important;transition:none!important;scroll-behavior:auto!important}.tool-card:hover{transform:none}.dropzone.dragover .upload-symbol{transform:none}}
+html.low-power .tool-card:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(43,47,91,.08)}
+html.low-power .hero-art{perspective:none}
+#workspace.is-processing[data-motion-tool="rotate"] .mini-pdf{animation:tool-rotate .8s cubic-bezier(.2,.8,.2,1) infinite alternate}
+#workspace[data-state="complete"][data-motion-tool="rotate"] .mini-pdf{animation:tool-rotate-done .55s ease-out}
+#workspace.is-processing[data-motion-tool="crop"] .mini-pdf{animation:tool-crop .9s ease-in-out infinite alternate}
+#workspace[data-state="complete"][data-motion-tool="crop"] .mini-pdf{animation:tool-crop-done .55s ease-out}
+#workspace.is-processing[data-motion-tool="watermark"] .mini-pdf::after{content:"";position:absolute;inset:8px 3px;border-top:1px solid rgba(244,91,98,.65);transform:rotate(-20deg);animation:watermark-sweep .9s ease-in-out infinite}
+#workspace[data-state="complete"][data-motion-tool="watermark"] .mini-pdf::after{content:"✓";position:absolute;right:-5px;top:-5px;display:grid;place-items:center;width:14px;height:14px;border:1px solid white;border-radius:50%;background:#269a73;color:white;font-size:9px;font-weight:800;animation:result-arrive .3s ease-out}
+#workspace.is-processing[data-motion-tool="pages"] .mini-pdf::after{content:"1";position:absolute;left:11px;bottom:2px;color:#7563db;font-size:9px;font-weight:900;animation:number-stamp .7s ease-in-out infinite alternate}
+#workspace[data-state="complete"][data-motion-tool="pages"] .mini-pdf::after{content:"#";position:absolute;right:-5px;top:-5px;display:grid;place-items:center;width:14px;height:14px;border:1px solid white;border-radius:50%;background:#7563db;color:white;font-size:8px;font-weight:900;animation:result-arrive .3s ease-out}
+#workspace.is-processing[data-motion-tool="unprotect"] .mini-pdf{animation:unlock-scan .9s ease-in-out infinite}
+#workspace[data-state="complete"][data-motion-tool="unprotect"] .mini-pdf::after{content:"✓";position:absolute;right:-5px;top:-5px;display:grid;place-items:center;width:14px;height:14px;border:1px solid white;border-radius:50%;background:#269a73;color:white;font-size:9px;font-weight:800;animation:result-arrive .3s ease-out}
+#workspace.is-processing[data-motion-tool="jpg"] .mini-pdf{animation:pdf-to-image .8s ease-in-out infinite alternate}
+#workspace.is-processing[data-motion-tool="jpg"] #downloadArea .download-link{animation:image-result .45s ease-out both}
+#workspace[data-state="complete"][data-motion-tool="jpg"] #downloadArea .download-link{animation:image-result .45s ease-out both}
+#workspace.is-processing[data-motion-tool="jpgpdf"] .mini-pdf{animation:image-to-pdf .8s ease-in-out infinite alternate}
+#workspace[data-state="complete"][data-motion-tool="jpgpdf"] #downloadArea .download-link{animation:result-arrive .45s cubic-bezier(.2,.8,.2,1) both}
+#workspace.is-processing[data-motion-tool="merge"] .file-row{animation:merge-stack .55s ease-in-out both}
+#workspace.is-processing[data-motion-tool="merge"] .file-row:nth-child(2){animation-delay:.08s}
+#workspace.is-processing[data-motion-tool="merge"] .file-row:nth-child(3){animation-delay:.16s}
+#workspace.is-processing[data-motion-tool="split"] .file-row{animation:split-sheets .65s ease-in-out both}
+#workspace.is-processing[data-motion-tool="split"] .file-row::after{content:"";position:absolute;inset:0;border:1px solid rgba(110,89,217,.25);border-radius:inherit;pointer-events:none;animation:split-outline .65s ease-in-out both}
+#workspace[data-state="complete"] .download-link{animation:result-arrive .45s cubic-bezier(.2,.8,.2,1) both}
+#workspace[data-state="complete"][data-motion-tool="merge"] .workspace-heading h2,#workspace[data-state="complete"][data-motion-tool="split"] .workspace-heading h2{color:#269a73}
+#workspace.is-processing[data-motion-tool="jpg"] .status,#workspace.is-processing[data-motion-tool="unprotect"] .status{color:#7563db}
+.mini-pdf{position:relative;overflow:visible}
+@keyframes tool-rotate{to{transform:rotateY(180deg) rotate(-8deg)}}
+@keyframes tool-rotate-done{0%{transform:rotate(0)}65%{transform:rotate(-12deg)}100%{transform:rotate(0)}}
+@keyframes tool-crop{to{transform:scale(.88);box-shadow:inset 0 0 0 3px rgba(110,89,217,.18)}}
+@keyframes tool-crop-done{0%{transform:scale(.9)}65%{transform:scale(1.08)}100%{transform:scale(1)}}
+@keyframes watermark-sweep{0%{opacity:0;transform:translateY(7px) rotate(-20deg)}50%{opacity:1}100%{opacity:.3;transform:translateY(-7px) rotate(-20deg)}}
+@keyframes number-stamp{from{opacity:.25;transform:translateY(-4px) scale(.8)}to{opacity:1;transform:translateY(0) scale(1.15)}}
+@keyframes unlock-scan{0%,100%{filter:grayscale(.7);transform:scale(.96)}50%{filter:none;transform:scale(1.06)}}
+@keyframes pdf-to-image{to{border-radius:50%;transform:scale(.83);background:#fff5e5;color:#d99526}}
+@keyframes image-to-pdf{to{border-radius:5px;transform:scale(1.06);background:#ffedf6;color:#d85d9d}}
+@keyframes image-result{from{opacity:0;transform:translateY(5px) scale(.92)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(prefers-reduced-motion:reduce){#workspace.is-processing .mini-pdf,#workspace.is-processing .mini-pdf::after,#workspace.is-processing .file-row,#workspace.is-processing .file-row::after,#workspace[data-state="complete"] .mini-pdf::after,#workspace[data-state="complete"] .download-link{animation:none!important}}
+@media(max-width:760px){#workspace.is-processing .mini-pdf{animation-duration:1.2s}}
