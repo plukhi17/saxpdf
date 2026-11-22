@@ -2,7 +2,7 @@
 
 ## Included
 - `index.html`: homepage with crawlable links to all ten tool pages.
-- Ten dedicated tool pages in folders: `merge-pdf/`, `compress-pdf/`, `split-pdf/`, `rotate-pdf/`, `crop-pdf/`, `pdf-to-jpg/`, `jpg-to-pdf/`, `unlock-pdf/`, `add-watermark-to-pdf/`, `add-page-numbers-to-pdf/`.
+- Dedicated tool pages in folders, including `merge-pdf/`, `compress-pdf/`, `split-pdf/`, `rotate-pdf/`, `crop-pdf/`, `sign-pdf/`, `pdf-to-jpg/`, `jpg-to-pdf/`, `unlock-pdf/`, `add-watermark-to-pdf/`, and `add-page-numbers-to-pdf/`.
 - `app.js` and `styles.css`: shared tool logic and design.
 - `sitemap.xml` and `robots.txt`.
 - `privacy.html`, `terms.html`, `contact.html`, and `legal.css`.

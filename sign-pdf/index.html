@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign PDF Online — Draw, Type or Upload | SAXPDF</title>
+<meta name="description" content="Sign PDF documents online. Draw, type or upload your signature, place signing elements anywhere, and download the signed PDF.">
+<link rel="canonical" href="https://www.saxpdf.com/sign-pdf/"><meta name="robots" content="index,follow">
+<link rel="stylesheet" href="../styles.css">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0HQPKYNRGJ"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-0HQPKYNRGJ');</script>
+<script defer src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script defer src="sign.js"></script>
+</head><body data-tool="sign">
+<header class="topbar"><a class="brand" href="/" aria-label="SAXPDF home"><span class="brand-mark">S</span><span>SAX<span class="brand-accent">PDF</span></span></a><nav class="topnav"><a href="/#tools">All tools</a><a href="/#how">How it works</a><a href="/privacy.html">Privacy</a><a class="nav-cta" href="#workspace">Open tool</a></nav><button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">☰</button></header>
+<main>
+<section class="tool-hero"><p class="breadcrumbs"><a href="/">Home</a> / <a href="/#tools">PDF tools</a> / Sign PDF</p><p class="eyebrow">SAXPDF · EDIT TOOL</p><h1>Sign PDF online</h1><p class="lead">Draw, type or upload your signature, place it exactly where you need it, and download a signed PDF.</p><div class="hero-links"><a class="primary-btn" href="#workspace">Sign a PDF <span>↓</span></a><a class="secondary-btn" href="/#tools">Explore all tools</a></div></section>
+<section class="workspace-section sign-workspace" id="workspace">
+<div class="workspace-heading"><div><p class="eyebrow">SIGNING WORKSPACE</p><h2 id="workspaceTitle">Upload a PDF to begin</h2><p class="muted" id="workspaceDescription">Your document stays on your device.</p></div><span class="local-badge"><span></span> Local processing</span></div>
+<div id="uploadStage" class="sign-upload-card"><div id="signDropzone" class="dropzone" tabindex="0" role="button"><div class="upload-symbol">↑</div><h3>Drop your PDF here</h3><p>or <span>browse files</span> from your device</p><small>One PDF document · Local processing only</small><input id="signFileInput" type="file" accept="application/pdf,.pdf" hidden></div><p id="signStatus" class="status" aria-live="polite"></p></div>
+
+<div id="signatureStage" class="signature-stage hidden">
+<div class="signature-tabs" role="tablist"><button class="active" data-sign-tab="type">Type</button><button data-sign-tab="draw">Draw</button><button data-sign-tab="upload">Upload</button></div>
+<div class="sign-tab-panel" data-sign-panel="type"><label>Full name<input id="typedName" value="Your Name"></label><div id="typedPreviews" class="typed-previews"></div><label>Signature color<input id="typedColor" type="color" value="#17233d"></label><label>Size <input id="typedSize" type="range" min="28" max="72" value="44"></label></div>
+<div class="sign-tab-panel hidden" data-sign-panel="draw"><canvas id="drawCanvas" width="700" height="220"></canvas><div class="draw-controls"><button id="clearDraw" class="secondary-btn" type="button">Clear</button><button id="undoDraw" class="secondary-btn" type="button">Undo</button><label>Pen <input id="penColor" type="color" value="#17233d"></label><label>Thickness <input id="penWidth" type="range" min="1" max="12" value="3"></label></div></div>
+<div class="sign-tab-panel hidden" data-sign-panel="upload"><label class="signature-upload"><input id="signatureUpload" type="file" accept="image/png,image/jpeg,image/svg+xml">Choose signature image</label><canvas id="uploadedPreview" width="700" height="220"></canvas><small>PNG, JPG, JPEG or SVG. Images are processed locally.</small></div>
+<div class="signature-actions"><button id="cancelSignature" class="secondary-btn" type="button">Back</button><button id="saveSignature" class="primary-btn" type="button">Save & continue <span>→</span></button></div>
+</div>
+
+<div id="editorStage" class="sign-editor hidden">
+<div class="sign-toolbar"><div><button id="prevPage" title="Previous page">‹</button><span id="pageIndicator">1 / 1</span><button id="nextPage" title="Next page">›</button></div><div><button id="zoomOut" title="Zoom out">−</button><button id="fitPage" title="Fit to page">Fit</button><button id="zoomIn" title="Zoom in">+</button><button id="rotatePage" title="Rotate page">↻</button></div><div><button id="undoAction" title="Undo (Ctrl/Cmd+Z)">Undo</button><button id="redoAction" title="Redo (Ctrl/Cmd+Shift+Z)">Redo</button></div></div>
+<div class="sign-editor-grid"><aside class="thumbnail-panel" id="thumbnailPanel"></aside>
+<section class="document-panel"><div class="page-scroll" id="pageScroll"><div id="pageStage" class="pdf-page-stage"><canvas id="pdfCanvas"></canvas><div id="elementLayer"></div></div></div></section>
+<aside class="element-panel"><div class="element-tools"><h3>Add element</h3><button data-add="signature">✎ <span>Signature</span></button><button data-add="initials">AB <span>Initials</span></button><button data-add="name">T <span>Full name</span></button><button data-add="date">▦ <span>Date</span></button><button data-add="text">Tt <span>Text</span></button></div><div id="propertiesPanel" class="properties-panel"><h3>Properties</h3><p class="muted">Select an element to edit it.</p></div></aside></div>
+<div class="sign-bottom"><button id="replaceDocument" class="secondary-btn" type="button">Start again</button><div><span id="elementCount">0 elements</span><button id="previewSigned" class="secondary-btn" type="button">Preview</button><button id="downloadSigned" class="primary-btn" type="button">Sign & Download PDF <span>→</span></button></div></div>
+</div>
+</section>
+<section class="tool-page-content"><div class="content-block"><h2>How to sign a PDF</h2><div class="steps-grid"><article><h3>01. Upload a PDF from your device.</h3></article><article><h3>02. Type, draw or upload a signature.</h3></article><article><h3>03. Place it on your pages and download the signed PDF.</h3></article></div></div><div class="content-block"><div class="tool-privacy-note"><h3>File privacy</h3><p>Your documents and signatures are processed locally in your browser. Your files are not uploaded to our servers.</p></div></div></section>
+</main>
+<footer class="site-footer"><a class="brand" href="/" aria-label="SAXPDF home"><span class="brand-mark">S</span><span>SAX<span class="brand-accent">PDF</span></span></a><nav class="footer-links"><a href="/privacy.html">Privacy Policy</a><a href="/terms.html">Terms</a><a href="/contact.html">Contact</a></nav><span>© 2026 SAXPDF</span></footer>
+<script>(function(){if(location.protocol!=="file:")return;document.querySelectorAll('a[href^="/"]').forEach(a=>{const p=a.getAttribute("href").slice(1);a.href=new URL(p?(p.endsWith("/")?p+"index.html":p):"index.html",new URL("../",location.href)).href})})();</script>
+</body></html>
