@@ -1,8 +1,9 @@
 # SAXPDF SEO-ready static project
 
 ## Included
-- `index.html`: homepage with crawlable links to all ten tool pages.
+- `index.html`: homepage with crawlable links to the available tool pages.
 - Dedicated tool pages in folders, including `merge-pdf/`, `compress-pdf/`, `split-pdf/`, `rotate-pdf/`, `crop-pdf/`, `sign-pdf/`, `pdf-to-jpg/`, `jpg-to-pdf/`, `unlock-pdf/`, `add-watermark-to-pdf/`, and `add-page-numbers-to-pdf/`.
+- `organize-pdf/`, `extract-pdf-pages/`, and `remove-pdf-pages/` provide browser-side page rearrangement and selection workflows. Their shared `page-tools.js` renderer uses PDF.js previews and pdf-lib output generation.
 - `app.js` and `styles.css`: shared tool logic and design.
 - `sitemap.xml` and `robots.txt`.
 - `privacy.html`, `terms.html`, `contact.html`, and `legal.css`.
@@ -28,6 +29,7 @@
 
 ## Tool behavior notes
 - The crop tool sets the PDF crop box; it does not securely erase underlying content outside the crop boundary.
+- Organize, extract, and remove process PDF bytes locally in the browser. Page selection is by rendered thumbnails; this does not add secure redaction or alter content outside the selected page operations.
 - PDF-to-JPG creates one downloadable JPG per page.
 - PDF compression offers Low, Recommended, High, and best-effort target-size modes. It rasterizes pages to compress image data, so output text is not selectable/searchable and interactive PDF features are not retained.
 - JPG-to-PDF supports JPG/JPEG and PNG.
